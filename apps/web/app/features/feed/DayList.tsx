@@ -1,7 +1,8 @@
+import { Link } from "../../lib/channel-ui";
 // A page of reports grouped by Beijing day with the same rail and rows as the home timeline
 // (全部动态, topics, search results, 收藏).
 import { useMemo } from "react";
-import { Link } from "react-router";
+
 import type { FeedItemSummary } from "@aihot/contracts/site";
 import { IconChevronRight } from "../../components/icons";
 import { beijingDate } from "../../lib/format";

@@ -1,5 +1,7 @@
+import { ScopedRouterForm as Form } from "../../lib/channel-ui";
+import { Link } from "../../lib/channel-ui";
 import { SITE } from "@aihot/industry/site";
-import { Form, Link, useSearchParams } from "react-router";
+import { useSearchParams } from "react-router";
 import type { Route } from "./+types/audit";
 import { adminGet } from "../../lib/admin.server";
 import { bj } from "../../features/admin/format";

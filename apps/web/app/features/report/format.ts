@@ -1,3 +1,5 @@
+import { stripChannel } from "@aihot/industry/channels";
+import { DAILY_REPORT_TIME } from "@aihot/industry/reports";
 // Names, dates and grouping for daily, weekly and monthly reports.
 import type { ReportNavigationEntry, ReportKind } from "@aihot/contracts/site";
 import { beijingWeekday } from "../../lib/format";
@@ -7,6 +9,7 @@ export const KIND_PATH: Record<ReportKind, string> = { daily: "/daily", weekly: 
 export const KIND_LABEL: Record<ReportKind, string> = { daily: "日报", weekly: "周报", monthly: "月报" };
 
 export function kindFromPath(pathname: string): ReportKind {
+  pathname = stripChannel(pathname);
   if (pathname.startsWith("/weekly")) return "weekly";
   if (pathname.startsWith("/monthly")) return "monthly";
   return "daily";
@@ -125,7 +128,7 @@ export function dateMark(kind: ReportKind, key: string): { figure: string; top: 
 }
 
 /** When each kind comes out (F10), for the masthead. */
-export const EDITION: Record<ReportKind, string> = { daily: "每天 08:00 出刊", weekly: "每周一出刊", monthly: "每月 1 日出刊" };
+export const EDITION: Record<ReportKind, string> = { daily: `每天 ${DAILY_REPORT_TIME} 出刊`, weekly: "每周一出刊", monthly: "每月 1 日出刊" };
 
 /** The masthead's figures, in the order a reader wants them; zero model releases is left out. */
 const METRICS: Array<[key: string, unit: string]> = [

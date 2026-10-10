@@ -1,3 +1,4 @@
+import { PROFILE } from "@aihot/industry/profile";
 // Publication rules. Each rule is defined once here and used by every exit.
 
 export interface SourceFacts {
@@ -36,7 +37,7 @@ export function hasItemPage(p: { visibility: string; sourceMode: string }): bool
 
 /** Selected: pool eligible, judged selected, and the source tier may enter the selection. */
 export function isSelectable(eligible: boolean, judgedSelected: boolean | null, tier: string): boolean {
-  return eligible && judgedSelected === true && tier !== "EXCLUDE_MP";
+  return !PROFILE.pilot && eligible && judgedSelected === true && tier !== "EXCLUDE_MP";
 }
 
 /**

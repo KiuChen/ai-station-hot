@@ -1,0 +1,276 @@
+{
+  "sources": [
+    {
+      "id": "art-rss-colossal",
+      "name": "Colossal",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.thisiscolossal.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 1
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "艺术"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "art-rss-hyperallergic",
+      "name": "Hyperallergic",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://hyperallergic.com/feed/",
+        "_aihot": {
+          "initialBackfillLimit": 1
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "艺术"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false
+    },
+    {
+      "id": "art-rss-artforum",
+      "name": "Artforum · News",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.artforum.com/c/news/feed/",
+        "sortByPublishedAt": true,
+        "_aihot": {
+          "initialBackfillLimit": 1
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "艺术"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "art-official-national",
+      "name": "中国国家博物馆 · 正在展出",
+      "kind": "web_list",
+      "config": {
+        "url": "https://www.chnmuseum.cn/zl/zhanlanyugao/",
+        "adapter": "official_tracking",
+        "tracking": {
+          "kind": "exhibition",
+          "parser": "national-current",
+          "organization": "中国国家博物馆",
+          "city": "北京",
+          "catalogOnly": true,
+          "landingUrl": "https://www.chnmuseum.cn/zl/zhanlanyugao/"
+        },
+        "_aihot": {
+          "initialBackfillLimit": 1
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "展览"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "art-official-palace-special",
+      "name": "故宫博物院 · 在展特展",
+      "kind": "web_list",
+      "config": {
+        "url": "https://www.dpm.org.cn/searchs/exhibition.html?pagesize=60&tpl_file=shows_temporary2_2&exhibition_status=1&showstype=301&order=1&category_id=301",
+        "adapter": "official_tracking",
+        "tracking": {
+          "kind": "exhibition",
+          "parser": "palace-special",
+          "organization": "故宫博物院",
+          "city": "北京",
+          "catalogOnly": true,
+          "landingUrl": "https://www.dpm.org.cn/shows.html"
+        },
+        "_aihot": {
+          "initialBackfillLimit": 1
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "展览"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "art-official-palace-permanent",
+      "name": "故宫博物院 · 专馆",
+      "kind": "web_list",
+      "config": {
+        "url": "https://www.dpm.org.cn/shows.html",
+        "adapter": "official_tracking",
+        "tracking": {
+          "kind": "exhibition",
+          "parser": "palace-permanent",
+          "organization": "故宫博物院",
+          "city": "北京",
+          "catalogOnly": true,
+          "landingUrl": "https://www.dpm.org.cn/shows.html"
+        },
+        "_aihot": {
+          "initialBackfillLimit": 1
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "展览"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "art-official-shanghai-special",
+      "name": "上海博物馆 · 在展特展",
+      "kind": "web_list",
+      "config": {
+        "url": "https://www.shanghaimuseum.cn/mu/frontend/pg/display/search-exhibit",
+        "adapter": "official_tracking",
+        "method": "POST",
+        "bodyJson": {
+          "params": {
+            "exhibitTypeCode": "OFFLINE_EXHIBITION",
+            "langCode": "CHINESE",
+            "offlineExhibitionType": "PRESENT"
+          },
+          "page": 1,
+          "limit": 100
+        },
+        "tracking": {
+          "kind": "exhibition",
+          "parser": "shanghai-special",
+          "organization": "上海博物馆",
+          "city": "上海",
+          "catalogOnly": true,
+          "landingUrl": "https://www.shanghaimuseum.cn/mu/frontend/pg/m/display/offline-exhibit"
+        },
+        "_aihot": {
+          "initialBackfillLimit": 1
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "展览"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "art-official-shanghai-permanent",
+      "name": "上海博物馆 · 东馆常设展",
+      "kind": "web_list",
+      "config": {
+        "url": "https://www.shanghaimuseum.cn/mu/frontend/pg/display/search-gallery",
+        "adapter": "official_tracking",
+        "method": "POST",
+        "bodyJson": {
+          "params": {
+            "roadId": 0,
+            "langCode": "CHINESE",
+            "location": "EAST"
+          },
+          "page": 1,
+          "limit": 100
+        },
+        "tracking": {
+          "kind": "exhibition",
+          "parser": "shanghai-permanent",
+          "organization": "上海博物馆",
+          "city": "上海",
+          "catalogOnly": true,
+          "landingUrl": "https://www.shanghaimuseum.cn/mu/frontend/pg/m/display/offline-exhibit"
+        },
+        "_aihot": {
+          "initialBackfillLimit": 1
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "展览"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "art-official-shanghai-west",
+      "name": "上海博物馆 · 人民广场馆常设展",
+      "kind": "web_list",
+      "config": {
+        "url": "https://www.shanghaimuseum.cn/mu/frontend/pg/display/search-gallery",
+        "adapter": "official_tracking",
+        "method": "POST",
+        "bodyJson": {
+          "params": {
+            "roadId": 0,
+            "langCode": "CHINESE",
+            "location": "WEST"
+          },
+          "page": 1,
+          "limit": 100
+        },
+        "tracking": {
+          "kind": "exhibition",
+          "parser": "shanghai-permanent",
+          "organization": "上海博物馆",
+          "city": "上海",
+          "catalogOnly": true,
+          "landingUrl": "https://www.shanghaimuseum.cn/mu/frontend/pg/m/display/offline-exhibit"
+        },
+        "_aihot": {
+          "initialBackfillLimit": 1
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "展览"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    }
+  ]
+}

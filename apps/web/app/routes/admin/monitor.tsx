@@ -1,6 +1,7 @@
+import { Anchor, Link } from "../../lib/channel-ui";
 import { SITE } from "@aihot/industry/site";
 import { useState } from "react";
-import { Link, useSearchParams } from "react-router";
+import { useSearchParams } from "react-router";
 import type { Route } from "./+types/monitor";
 import { adminGet } from "../../lib/admin.server";
 import { useAdminAction } from "../../features/admin/action";
@@ -111,7 +112,7 @@ function EventCard({ e, all }: { e: MonitorEvent; all: MonitorEvent[] }) {
             </div>
             <div className="min-w-0">
               <div className="text-ink">{post.text}</div>
-              <a className="text-[12px] text-ink-4 hover:text-accent" href={post.url} target="_blank" rel="noreferrer">{post.originalText}</a>
+              <Anchor className="text-[12px] text-ink-4 hover:text-accent" href={post.url} target="_blank" rel="noreferrer">{post.originalText}</Anchor>
             </div>
             <Button size="sm" tone="ghost" onClick={() => { setMove({ postId: post.postId, to: "" }); setDialog("move"); }}>移动</Button>
           </li>
@@ -245,7 +246,7 @@ function PostRow({ post }: { post: Post }) {
   return (
     <article className="rounded-panel bg-surface p-4 ring-1 ring-line">
       <div className="flex flex-wrap items-center gap-1.5 text-[12.5px] text-ink-3">
-        <a href={post.url} target="_blank" rel="noreferrer" className="num hover:text-accent">{bj(post.published_at, true)}</a>
+        <Anchor href={post.url} target="_blank" rel="noreferrer" className="num hover:text-accent">{bj(post.published_at, true)}</Anchor>
         {post.skipped ? <Badge>已跳过</Badge> : post.relevant ? <Badge tone="accent">相关</Badge> : post.processed_at ? <Badge>无关</Badge> : <Badge tone="warn">待识别</Badge>}
         {post.needs_review && !post.reviewed && <Badge tone="bad">需要复核</Badge>}
         {post.reviewed && <Badge tone="ok">已核实</Badge>}
@@ -307,7 +308,7 @@ export default function MonitorAdmin({ loaderData }: Route.ComponentProps) {
     <AdminPage
       title="Codex 重置"
       subtitle="修正识别结果：事件类型、状态、时间与适用对象；没有“已完成”帖子时用回执核对确认；识别错的事件撤回；帖子挂错可以移动。"
-      actions={<a className="text-[13px] text-accent" href="/codex-reset" target="_blank" rel="noreferrer">打开公开页</a>}
+      actions={<Anchor className="text-[13px] text-accent" href="/codex-reset" target="_blank" rel="noreferrer">打开公开页</Anchor>}
     >
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div className="flex gap-1.5">

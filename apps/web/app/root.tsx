@@ -1,25 +1,25 @@
+import { channelForPath, stripChannel } from "@aihot/industry/channels";
+import { ChannelSwitcher, useCurrentChannel } from "./lib/channel-ui";
+import { Anchor, Link } from "./lib/channel-ui";
 import { titled } from "./lib/seo";
 import { SITE } from "@aihot/industry/site";
-import {
-  isRouteErrorResponse, Link, Links, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData, useLocation, useNavigation, useRouteError, useRouteLoaderData,
-  type ShouldRevalidateFunction,
-} from "react-router";
+import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData, useLocation, useNavigation, useRouteError, useRouteLoaderData, type ShouldRevalidateFunction,  } from "react-router";
 import type { ReactNode } from "react";
 import type { Route } from "./+types/root";
 import "./app.css";
 import { Sidebar } from "./components/shell/Sidebar";
 import { MobileTabBar } from "./components/shell/MobileTabBar";
 import { BackToTop, NavigationProgress } from "./components/shell/Chrome";
-import { RingMark } from "./components/Logo";
+import { RingMark, Wordmark } from "./components/Logo";
 import { buttonClass } from "./components/ui/Controls";
 import { THEME_BOOT_SCRIPT } from "./lib/local-state";
 import { apiGet } from "./lib/api.server";
 import { useHydratedFlag } from "./lib/hydration";
 
 export const links: Route.LinksFunction = () => [
-  { rel: "icon", href: "/favicon.ico", sizes: "any" },
-  { rel: "icon", type: "image/png", href: "/icon.png" },
-  { rel: "apple-touch-icon", href: "/apple-icon.png" },
+  { rel: "icon", href: "/favicon.ico?v=folded-s-1", sizes: "any" },
+  { rel: "icon", type: "image/png", href: "/icon.png?v=folded-s-1" },
+  { rel: "apple-touch-icon", href: "/apple-icon.png?v=folded-s-1" },
   { rel: "manifest", href: "/manifest.webmanifest" },
   { rel: "alternate", type: "application/rss+xml", title: `${SITE.name} — 精选`, href: "/feed.xml" },
 ];
@@ -30,7 +30,7 @@ interface SiteMeta {
 
 export async function loader({ request }: Route.LoaderArgs) {
   try {
-    return await apiGet<SiteMeta>("/api/site/meta", { signal: request.signal });
+    return await apiGet<SiteMeta>("/api/site/meta", { request, signal: request.signal });
   } catch {
     return { changelogVersion: null } satisfies SiteMeta;
   }
@@ -68,18 +68,24 @@ export function meta({ error }: Route.MetaArgs) {
 
 /** Sidebar, main column and phone tab bar around a page (or an error). */
 function SiteShell({ changelogVersion, children }: { changelogVersion: string | null; children: ReactNode }) {
+  const channel = useCurrentChannel();
   const navigation = useNavigation();
   return (
     <div className="flex min-h-dvh">
       <NavigationProgress active={navigation.state === "loading"} />
-      <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[70] focus:rounded-control focus:bg-surface focus:px-3 focus:py-2">
+      <Anchor href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[70] focus:rounded-control focus:bg-surface focus:px-3 focus:py-2">
         跳到正文
-      </a>
+      </Anchor>
       <Sidebar changelogVersion={changelogVersion} />
       {/* Mobile shell (≤ 960px): one centred column, the tab bar below. Desktop: the page fills the main area
           up to the list width (--page-max-wide), centred beyond it. */}
       <main id="main" className="min-w-0 flex-1 pb-[calc(72px+env(safe-area-inset-bottom))] lg:px-7 lg:pb-[72px] lg:pt-6">
-        <div className="mx-auto w-full max-w-[640px] px-4 lg:max-w-[var(--page-max-wide)] lg:px-0">{children}</div>
+        <div className="mx-auto w-full max-w-[640px] px-4 lg:max-w-[var(--page-max-wide)] lg:px-0">
+          {channel.pilot&&<Link to="/" aria-label={`${SITE.name} 频道首页`} className="mt-3 flex min-h-8 items-center text-ink lg:hidden"><Wordmark size={18} /></Link>}
+          <ChannelSwitcher className="mb-3 mt-3 lg:hidden" />
+          {channel.pilot && <details className="mb-3 text-[12px] text-ink-3"><summary className="min-h-7">{channel.label}频道 · {channel.dataReady?'试运行':'待启用'}</summary><p className="py-2 leading-6">{channel.dataReady?'动态可阅读；模型评分与精选门槛仍待样本校准，正式汇总尚未开放。':'信源与筛选配置待启用。'}</p></details>}
+          {children}
+        </div>
       </main>
       <MobileTabBar changelogVersion={changelogVersion} />
       <BackToTop />
@@ -91,11 +97,17 @@ export default function App() {
   const meta = useLoaderData<typeof loader>();
   useHydratedFlag();
   const { pathname } = useLocation();
+  const navigation = useNavigation();
+  const channel = useCurrentChannel();
+  const pending = navigation.location ? channelForPath(navigation.location.pathname) : channel;
+  if (navigation.state !== "idle" && pending.key !== channel.key) {
+    return <div role="status" aria-live="polite" className="grid min-h-dvh place-items-center text-ink-3">正在加载{pending.label}频道的最新结果…</div>;
+  }
   // The admin has its own chrome.
-  if (pathname === "/admin" || pathname.startsWith("/admin/")) return <Outlet />;
+  if (/^\/admin(?:\/|$)/.test(stripChannel(pathname))) return <Outlet key={channel.key} />;
   return (
-    <SiteShell changelogVersion={meta.changelogVersion}>
-      <Outlet />
+    <SiteShell key={channel.key} changelogVersion={meta.changelogVersion}>
+      <Outlet key={channel.key} />
     </SiteShell>
   );
 }
@@ -117,7 +129,7 @@ export function ErrorBoundary() {
         </p>
         <div className="mt-6 flex justify-center gap-2.5">
           <Link to="/" className={buttonClass("primary")}>
-            回到精选
+            {channelForPath(pathname).pilot ? '回到频道概览' : '回到精选'}
           </Link>
           <Link to="/all" className={buttonClass("secondary")}>
             浏览全部动态
@@ -127,6 +139,6 @@ export function ErrorBoundary() {
     </div>
   );
   // Admin errors stay inside the admin's own chrome.
-  if (pathname === "/admin" || pathname.startsWith("/admin/")) return body;
+  if (/^\/admin(?:\/|$)/.test(stripChannel(pathname))) return body;
   return <SiteShell changelogVersion={site?.changelogVersion ?? null}>{body}</SiteShell>;
 }

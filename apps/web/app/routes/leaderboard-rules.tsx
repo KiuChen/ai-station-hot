@@ -1,7 +1,9 @@
+import { scopeMeta } from "../lib/channel-meta";
+import { Anchor, Link } from "../lib/channel-ui";
 // Public method statement for the leaderboard (method v15, docs/leaderboard.md).
 // The copy states how rankings are actually computed; it changes only together with the method.
 import { SITE, withSubject } from "@aihot/industry/site";
-import { Link, useLoaderData } from "react-router";
+import { useLoaderData } from "react-router";
 import type { LbRunInfo } from "@aihot/contracts/leaderboard";
 import { loadOr404 } from "../lib/api.server";
 import { breadcrumbLd, pageMeta } from "../lib/seo";
@@ -17,10 +19,10 @@ interface RulesData {
 }
 
 export async function loader({ request }: { request: Request }) {
-  return loadOr404<RulesData>("/api/site/leaderboard/rules", { signal: request.signal });
+  return loadOr404<RulesData>("/api/site/leaderboard/rules", { request, signal: request.signal });
 }
 
-export function meta() {
+function baseMeta() {
   return pageMeta({
     title: "共识指数计算方法",
     description: `查看 ${SITE.name} 模型榜如何核验公开成绩、比较共同参评结果、处理缺失证据，并确定排名和 0—100 共识指数。`,
@@ -128,9 +130,9 @@ export default function LeaderboardRulesPage() {
       <AsideCard title="本页内容" className="hidden lg:block">
         <nav aria-label="本页内容" className="-mx-2 -mb-1">
           {SECTIONS.map(([href, label]) => (
-            <a key={href} href={href} className="block rounded-control px-2 py-2 text-[13.5px] text-ink-2 transition-colors hover:bg-bg-sunk hover:text-ink">
+            <Anchor key={href} href={href} className="block rounded-control px-2 py-2 text-[13.5px] text-ink-2 transition-colors hover:bg-bg-sunk hover:text-ink">
               {label}
-            </a>
+            </Anchor>
           ))}
         </nav>
       </AsideCard>
@@ -251,3 +253,5 @@ export default function LeaderboardRulesPage() {
     </ReadingLayout>
   );
 }
+
+export function meta(args: { location: { pathname: string } }) { return scopeMeta(baseMeta(),args.location.pathname); }

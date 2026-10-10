@@ -1,3 +1,5 @@
+import {useCurrentChannel} from "../../lib/channel-ui";
+import { Anchor, Link } from "../../lib/channel-ui";
 // One report with a newspaper's structure in the site's own look: a nameplate with its 报眼 (the box
 // beside it for the issue and date), a band of the issue's figures, the front page (the lead, today's
 // highlights and the page index), then one page per section in two columns, the neighbouring issues
@@ -7,7 +9,7 @@
 // sit in rows of two whose rules run across the page, each story as tall as its neighbour.
 import { SITE } from "@aihot/industry/site";
 import { useState, type ReactNode } from "react";
-import { Link } from "react-router";
+
 import type { ReportCitation, ReportDetail, ReportNavigationEntry } from "@aihot/contracts/site";
 import { shortSourceName } from "../../lib/format";
 import { Badge } from "../../components/ui/Badge";
@@ -25,13 +27,14 @@ const anchorOf = (c: ReportCitation) => (c.itemId ? `r-${c.itemId}` : null);
 const LINK = "inline-flex min-h-7 items-center gap-0.5 font-medium transition-colors hover:text-accent";
 
 function Masthead({ report, index }: { report: ReportDetail; index: ReportNavigationEntry[] }) {
+  const channel=useCurrentChannel();
   const issue = issueNumber(index, report.key);
   const mark = dateMark(report.kind, report.key);
   return (
     <header className="pt-5 lg:pt-0">
       <div className="flex items-center justify-between gap-4 text-[12px] text-ink-4">
         <span className="num">{dateLine(report.kind, report.key)}</span>
-        <span className="hidden tracking-[0.3em] @[640px]:inline">{MOTTO[report.kind]}</span>
+        <span className="hidden tracking-[0.3em] @[640px]:inline">{channel.pilot?`${channel.label} · ${KIND_LABEL[report.kind]}`:MOTTO[report.kind]}</span>
         <span>{EDITION[report.kind]}</span>
       </div>
 
@@ -39,9 +42,9 @@ function Masthead({ report, index }: { report: ReportDetail; index: ReportNaviga
         <div className="flex min-w-0 flex-col justify-center">
           <h1 id="report-start">
             <span className="sr-only">
-              AI {KIND_LABEL[report.kind]} · {dateLine(report.kind, report.key)}
+              {channel.subject} {KIND_LABEL[report.kind]} · {dateLine(report.kind, report.key)}
             </span>
-            <Nameplate which={report.kind} className="block h-[54px] w-auto @[520px]:h-[74px] @[880px]:h-[98px] @[1040px]:h-[112px]" />
+            {channel.pilot ? <span className="block text-[42px] font-black tracking-tight @[880px]:text-[80px]">{channel.subject}{KIND_LABEL[report.kind]}</span> : <Nameplate which={report.kind} className="block h-[54px] w-auto @[520px]:h-[74px] @[880px]:h-[98px] @[1040px]:h-[112px]" />}
           </h1>
           <p className="mt-3 text-[11.5px] tracking-[0.36em] text-ink-4 @[880px]:mt-4 @[880px]:text-[12.5px]">{SITE.name.toUpperCase()}</p>
         </div>
@@ -90,9 +93,9 @@ function Source({ c, size = 16 }: { c: ReportCitation; size?: number }) {
  */
 function Original({ c, className = "" }: { c: ReportCitation; className?: string }) {
   return (
-    <a href={c.sourceUrl} target="_blank" rel="noopener noreferrer" aria-label={`阅读${shortSourceName(c.sourceName)}原文：${c.title}（新标签页）`} className={`${LINK} text-[12.5px] text-ink-3 ${className}`}>
+    <Anchor href={c.sourceUrl} target="_blank" rel="noopener noreferrer" aria-label={`阅读${shortSourceName(c.sourceName)}原文：${c.title}（新标签页）`} className={`${LINK} text-[12.5px] text-ink-3 ${className}`}>
       原文 <IconArrowUpRight size={12} />
-    </a>
+    </Anchor>
   );
 }
 
@@ -274,11 +277,11 @@ function FrontPage({ report, pages, leadStory, count }: { report: ReportDetail; 
             <ol className="mt-3">
               {index.map((p, i) => (
                 <li key={p.id}>
-                  <a href={`#${p.id}`} className="group flex items-baseline gap-2 py-1.5 text-[13.5px]">
+                  <Anchor href={`#${p.id}`} className="group flex items-baseline gap-2 py-1.5 text-[13.5px]">
                     <span className="num w-7 shrink-0 text-[14px] font-bold text-ink">{pad(i + 1)}</span>
                     <span className="min-w-0 flex-1 truncate text-ink-2 transition-colors group-hover:text-accent">{p.label}</span>
                     <span className="num shrink-0 text-[12px] text-ink-4">{p.n}</span>
-                  </a>
+                  </Anchor>
                 </li>
               ))}
             </ol>
@@ -308,7 +311,8 @@ export function SectionPage({ id, no, label, children }: { id: string; no?: numb
 const COLUMNS = "@[760px]:columns-2 @[760px]:gap-x-12 @[760px]:[column-rule:1px_solid_var(--line)]";
 
 function Neighbours({ report, index }: { report: ReportDetail; index: ReportNavigationEntry[] }) {
-  const titleOf = (key: string) => index.find((e) => e.key === key)?.title ?? `AI ${KIND_LABEL[report.kind]} · ${key}`;
+  const channel=useCurrentChannel();
+  const titleOf = (key: string) => index.find((e) => e.key === key)?.title ?? `${channel.subject} ${KIND_LABEL[report.kind]} · ${key}`;
   const cell = "group flex min-w-0 flex-col py-6";
   const title = "mt-2.5 line-clamp-2 text-[16px] font-bold leading-[1.5] text-ink transition-colors group-hover:text-accent @[880px]:text-[18px]";
   return (
@@ -338,11 +342,12 @@ function Neighbours({ report, index }: { report: ReportDetail; index: ReportNavi
 }
 
 function History({ report, index }: { report: ReportDetail; index: ReportNavigationEntry[] }) {
+  const channel=useCurrentChannel();
   const others = index.filter((e) => e.key !== report.key).slice(0, 12);
   if (others.length === 0) return null;
   return (
     <section id="report-history" className="scroll-mt-6 pt-12">
-      <Kicker>往期 AI {KIND_LABEL[report.kind]}</Kicker>
+      <Kicker>往期 {channel.subject} {KIND_LABEL[report.kind]}</Kicker>
       <ul className="mt-3">
         {others.map((e) => (
           <li key={e.key}>

@@ -1,6 +1,9 @@
+import { scopeMeta } from "../lib/channel-meta";
+import { channelFetch } from "../lib/channel-fetch";
+import { Link } from "../lib/channel-ui";
 import { SITE } from "@aihot/industry/site";
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router";
+
 import { Presence } from "../components/ui/Presence";
 import { pageMeta } from "../lib/seo";
 import { exportBundle, importBundle, removeStar, useStarred, type ImportReport } from "../lib/local-state";
@@ -12,7 +15,7 @@ export function headers() {
   return { "Cache-Control": "public, max-age=0, s-maxage=300, stale-while-revalidate=600" };
 }
 
-export function meta() {
+function baseMeta() {
   return pageMeta({ title: "我的收藏", description: `保存在这台设备上的 ${SITE.name} 收藏。`, path: "/starred", noindex: true });
 }
 
@@ -37,7 +40,7 @@ export default function StarredPage() {
   useEffect(() => {
     if (!mounted || !starredIds) return;
     const controller = new AbortController();
-    fetch(`/api/site/items/availability?ids=${encodeURIComponent(starredIds)}`, { signal: controller.signal })
+    channelFetch(`/api/site/items/availability?ids=${encodeURIComponent(starredIds)}`, { signal: controller.signal })
       .then((r) => (r.ok ? r.json() : {}))
       .then((data) => { if (!controller.signal.aborted) setAvailability(data); })
       .catch(() => {});
@@ -140,3 +143,5 @@ export default function StarredPage() {
     </div>
   );
 }
+
+export function meta(args: { location: { pathname: string } }) { return scopeMeta(baseMeta(),args.location.pathname); }

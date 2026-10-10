@@ -1,0 +1,148 @@
+{
+  "sources": [
+    {
+      "id": "cs2-rss-valve",
+      "name": "Valve · CS2 官方更新",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://steamcommunity.com/games/CSGO/rss/",
+        "sortByPublishedAt": true,
+        "_aihot": {
+          "initialBackfillLimit": 1
+        },
+        "summaryIsBody": true
+      },
+      "tier": "T1",
+      "first_party": true,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "CS2"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "cs2-rss-hltv",
+      "name": "HLTV",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.hltv.org/rss/news",
+        "sortByPublishedAt": true,
+        "_aihot": {
+          "initialBackfillLimit": 1
+        },
+        "ingestNoiseFilter": {
+          "dropMarkersTitleOnly": [
+            "betting bonus",
+            "promo code",
+            "case opening",
+            "skin gambling",
+            "download cheat",
+            "buy cheats",
+            "博彩优惠",
+            "外挂下载"
+          ]
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "CS2"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "cs2-rss-dust2-us",
+      "name": "Dust2.us",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.dust2.us/rss",
+        "sortByPublishedAt": true,
+        "_aihot": {
+          "initialBackfillLimit": 1
+        },
+        "ingestNoiseFilter": {
+          "dropMarkersTitleOnly": [
+            "betting bonus",
+            "promo code",
+            "case opening",
+            "skin gambling",
+            "download cheat",
+            "buy cheats",
+            "博彩优惠",
+            "外挂下载"
+          ]
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "CS2"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "cs2-official-epl24",
+      "name": "ESL · 当前顶级赛事官方目录",
+      "kind": "web_list",
+      "config": {
+        "url": "https://pro.eslgaming.com/csgo/proleague/",
+        "adapter": "official_tracking",
+        "activeEventKey": "epl-s24",
+        "tracking": {
+          "kind": "tournament",
+          "parser": "esl-current",
+          "eventKey": "epl-s24",
+          "organization": "ESL FACEIT Group",
+          "city": "卡托维兹，波兰",
+          "catalogOnly": false
+        },
+        "_aihot": {
+          "initialBackfillLimit": 1
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "赛事"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "cs2-rss-epl24-news",
+      "name": "ESL Pro Tour · EPL S24 报道",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://pro.eslgaming.com/tour/feed/",
+        "activeEventKey": "epl-s24",
+        "_aihot": {
+          "initialBackfillLimit": 1
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "赛事"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    }
+  ]
+}

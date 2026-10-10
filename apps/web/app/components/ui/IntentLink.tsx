@@ -1,5 +1,6 @@
+import { Link } from "../../lib/channel-ui";
 import { useEffect, useRef, useState } from "react";
-import { Link, type LinkProps } from "react-router";
+import { type LinkProps } from "react-router";
 
 /** Hover, keyboard focus and a stationary touch prefetch; scrolling over a card does not. */
 export function IntentLink({ onFocus, onBlur, onMouseEnter, onMouseLeave, onTouchStart, onTouchMove, onTouchEnd, onTouchCancel, ...props }: Omit<LinkProps, "prefetch">) {

@@ -1,3 +1,5 @@
+import { checkModelQuotaAlerts } from "@aihot/backend/operations/model-quota";
+import { DAILY_REPORT_HOUR } from "@aihot/industry/reports";
 // Cron-style schedules (Asia/Shanghai). Each run is recorded in job_runs; missed slots run once.
 import type { PgBoss } from "pg-boss";
 import { FEATURES } from "@aihot/industry/features";
@@ -43,7 +45,7 @@ export const SCHEDULES: Scheduled[] = [
   { name: "hot.snapshot", cron: "2 * * * *", run: () => snapshotHeat() },
   { name: "stories.status", cron: "7 * * * *", run: refreshStoryStatuses },
   { name: "stories.links", cron: "12 * * * *", run: linkRelatedStories },
-  { name: "reports.daily", cron: "0 8 * * *", missed: "once", run: () => composeDaily(beijingDate(Date.now())) },
+  { name: "reports.daily", cron: `0 ${DAILY_REPORT_HOUR} * * *`, missed: "once", run: () => composeDaily(beijingDate(Date.now())) },
   { name: "reports.weekly", cron: "0 10 * * 1", missed: "once", run: () => composeWeekly(isoWeekLabel(addDays(beijingDate(Date.now()), -7))) },
   {
     name: "reports.monthly",
@@ -67,6 +69,9 @@ export const SCHEDULES: Scheduled[] = [
     run: async () => ({ receipts: await markStalePendingReceipts(), released: await autoReleaseUnknownReceipts(), deliveries: await markStaleDeliveries() }),
   },
   { name: "ops.alerts", cron: "*/10 * * * *", run: () => checkAlerts() },
+  ...(process.env.FEISHU_QUOTA_ALERT_ENABLED === "true"
+    ? [{ name: "ops.model-quota", cron: "*/30 * * * *", run: () => checkModelQuotaAlerts() }]
+    : []),
   // One message with the follow-ups that do not touch readers (nothing when there are none).
   { name: "ops.digest", cron: "0 9 * * *", missed: "once", run: () => sendDigest() },
   // Feedback that did not reach the internal Feishu chat when it was sent (off with FEISHU_INTERNAL_ENABLED).
@@ -81,7 +86,7 @@ export const SCHEDULES: Scheduled[] = [
   ...(collecting
     ? [
         { name: "sources.schedule", cron: "* * * * *", run: () => scheduleDueSources() },
-        { name: "sources.adapt-intervals", cron: "20 4 * * *", run: adaptIntervals },
+        ...(process.env.SOURCE_INTERVAL_ADAPT_ENABLED === "false" ? [] : [{ name: "sources.adapt-intervals", cron: "20 4 * * *", run: adaptIntervals }]),
         // WeChat official accounts (paid), each once per its interval.
         { name: "sources.mp-reconcile", cron: "*/15 * * * *", run: () => scheduleMpReconcile() },
       ]

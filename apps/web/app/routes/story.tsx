@@ -1,6 +1,11 @@
+import { apiBaseFor } from "../lib/api.server";
+import { channelForPath,channelPath } from "@aihot/industry/channels";
+import { scopeMeta } from "../lib/channel-meta";
+import { channelFetch } from "../lib/channel-fetch";
+import { Link } from "../lib/channel-ui";
 import { SITE, withSubject } from "@aihot/industry/site";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { Link, redirect, useLoaderData } from "react-router";
+import { redirect, useLoaderData } from "react-router";
 import type { Route } from "./+types/story";
 import type { StoryDetail, StoryReportView } from "@aihot/contracts/site";
 import { data as routeData } from "react-router";
@@ -13,17 +18,17 @@ import { Select } from "../components/ui/Controls";
 import { IconArrowLeft, IconChevronRight, IconClock, IconDoc, IconUsers } from "../components/icons";
 
 export async function loader({ params, request }: Route.LoaderArgs) {
-  const res = await fetch(`${process.env.API_BASE_URL || "http://127.0.0.1:3001"}/api/site/stories/${encodeURIComponent(params.publicId)}`, { redirect: "manual", signal: AbortSignal.any([request.signal, AbortSignal.timeout(15000)]) });
+  const res = await channelFetch(`${apiBaseFor(request)}/api/site/stories/${encodeURIComponent(params.publicId)}`, { redirect: "manual", signal: AbortSignal.any([request.signal, AbortSignal.timeout(15000)]) });
   if (res.status === 308) {
     const target = (await res.json()) as { mergedInto: string };
-    throw redirect(`/story/${target.mergedInto}`, 308);
+    throw redirect(channelPath(`/story/${target.mergedInto}`,channelForPath(new URL(request.url).pathname).key), 308);
   }
   if (res.status === 404) throw routeData({ message: "not_found" }, { status: 404 });
   if (!res.ok) throw routeData({ message: "unavailable" }, { status: 503 });
   return { story: (await res.json()) as StoryDetail };
 }
 
-export function meta({ loaderData }: Route.MetaArgs) {
+function baseMeta({ loaderData }: Route.MetaArgs) {
   if (!loaderData) return [{ title: titled("事件不存在") }, { name: "robots", content: "noindex" }];
   const s = loaderData.story;
   return pageMeta({
@@ -431,3 +436,5 @@ export default function StoryPage() {
     </div>
   );
 }
+
+export function meta(args: Route.MetaArgs) { return scopeMeta(baseMeta(args),args.location.pathname); }

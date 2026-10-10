@@ -1,3 +1,4 @@
+import { eventActiveForSource, eventCandidateAllowed, saveTracking } from "./official-tracking.ts";
 // Collection run for one source: fetch listing → filter → store material → enqueue processing.
 // A failed fetch never advances the success cursor; the source's health reflects consecutive failures.
 import { sql } from "../db.ts";
@@ -102,7 +103,8 @@ export async function collectSource(sourceId: string, opts: { force?: boolean } 
     let candidates: Candidate[];
     let nextCursor: Record<string, unknown> = { ...(source.cursor ?? {}) };
     let detail: Record<string, unknown> | null = null;
-    if (source.kind === "rss") {
+    if (source.config.activeEventKey && !eventActiveForSource(source)) candidates = [];
+    else if (source.kind === "rss") {
       const rss = await fetchRss(source, opts);
       candidates = rss.candidates;
       // The first import has a smaller backfill cap than later runs: allow the next run to read
@@ -123,6 +125,8 @@ export async function collectSource(sourceId: string, opts: { force?: boolean } 
       detail = { pages: x.pages, truncated: x.truncated, backlog: x.backlog.length, backlogPages: x.backlogPages, dropped: x.dropped };
     }
     found = candidates.length;
+    await saveTracking(source, candidates);
+    candidates = source.config.tracking?.catalogOnly ? [] : candidates.filter(c => eventCandidateAllowed(c, source));
     candidates = candidates.filter((c) => allowed(c.url, source)).map((c) => rewriteUrl(c, source)).filter((c) => !noiseFiltered(c, source));
     if (source.config.sortByPublishedAt) candidates.sort((a, b) => (b.publishedAt?.getTime() ?? 0) - (a.publishedAt?.getTime() ?? 0));
 

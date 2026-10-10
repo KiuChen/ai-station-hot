@@ -1,5 +1,7 @@
+import { channelFetch } from "../../lib/channel-fetch";
+import { Anchor, Link } from "../../lib/channel-ui";
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router";
+
 import type { StoryFollowup, StoryFollowupsResponse, StoryRef } from "@aihot/contracts/site";
 import { MoreLink } from "../../components/ui/Page";
 import { relativeTime, shortSourceName } from "../../lib/format";
@@ -19,7 +21,7 @@ export function StoryFollowups({ story, currentId }: { story: StoryRef; currentI
     const load = () => {
       if (started) return;
       started = true;
-      fetch(`/api/site/stories/${encodeURIComponent(story.publicId)}/followups`, { signal: controller.signal })
+      channelFetch(`/api/site/stories/${encodeURIComponent(story.publicId)}/followups`, { signal: controller.signal })
         .then((r) => (r.ok ? r.json() : null))
         .then((body: StoryFollowupsResponse | null) => {
           if (!body || controller.signal.aborted) return;
@@ -35,7 +37,7 @@ export function StoryFollowups({ story, currentId }: { story: StoryRef; currentI
     return () => { observer?.disconnect(); controller.abort(); };
   }, [story.publicId, currentId]);
   return <div ref={anchor}>
-    <noscript><a href={`/story/${story.publicId}`}>查看事件全部后续</a></noscript>
+    <noscript><Anchor href={`/story/${story.publicId}`}>查看事件全部后续</Anchor></noscript>
     {items && items.length > 0 && <Followups items={items} more={more} story={story} />}
   </div>;
 }

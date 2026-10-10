@@ -1,15 +1,25 @@
+import {channelForPath} from "@aihot/industry/channels";
 // Reader state kept only in this browser; nothing about a reader leaves it. Storage failures degrade
 // silently. Keep the keys and formats once readers have data under them.
 import { useSyncExternalStore } from "react";
 import { beijingDate } from "@aihot/contracts/time";
 
-export const KEYS = {
+const BASE_KEYS = {
   starred: "aihot-starred-items",
   read: "aihot-read-items",
   theme: "aihot-theme",
   changelogSeen: "aihot-changelog-seen-version",
   feedbackDraft: "aihot-feedback-draft-v1",
 } as const;
+
+export const KEYS = {
+ get starred() {return scopedKey(BASE_KEYS.starred)},
+ get read() {return scopedKey(BASE_KEYS.read)},
+ theme: BASE_KEYS.theme,
+ changelogSeen:BASE_KEYS.changelogSeen,
+ get feedbackDraft(){return scopedKey(BASE_KEYS.feedbackDraft)},
+};
+function scopedKey(key:string) { const c=typeof window!=="undefined" ? channelForPath(window.location?.pathname ?? "/") : {key:"ai"}; return c.key==="ai" ? key : key+"-"+c.key; }
 
 export const STARRED_LIMIT = 500;
 export const READ_LIMIT = 5000;
@@ -84,8 +94,8 @@ function subscribeKey(key: string) {
     };
   };
 }
-const subscribeStarred = subscribeKey(KEYS.starred);
-const subscribeRead = subscribeKey(KEYS.read);
+const subscribeStarred = (listener:()=>void) => subscribeKey(KEYS.starred)(listener);
+const subscribeRead = (listener:()=>void) => subscribeKey(KEYS.read)(listener);
 const subscribeTheme = subscribeKey(KEYS.theme);
 const subscribeChangelog = subscribeKey(KEYS.changelogSeen);
 

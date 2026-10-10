@@ -1,3 +1,4 @@
+import { scopeMeta } from "../lib/channel-meta";
 import { SITE } from "@aihot/industry/site";
 import { pageMeta } from "../lib/seo";
 import { prepareCopy } from "../lib/site-copy";
@@ -11,7 +12,7 @@ export function headers() {
   return { "Cache-Control": "public, max-age=0, s-maxage=300, stale-while-revalidate=600" };
 }
 
-export function meta() {
+function baseMeta() {
   return pageMeta({ title: "使用规则", description: `本站网站、RSS、公开 API 与 MCP 的使用规则。`, path: "/terms", image: "/og/pages/terms.png" });
 }
 
@@ -25,3 +26,5 @@ export default function TermsPage() {
     />
   );
 }
+
+export function meta(args: { location: { pathname: string } }) { return scopeMeta(baseMeta(),args.location.pathname); }

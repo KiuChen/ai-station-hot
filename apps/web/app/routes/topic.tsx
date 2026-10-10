@@ -1,5 +1,8 @@
+import {channelForPath,channelPath} from "@aihot/industry/channels";
+import { scopeMeta } from "../lib/channel-meta";
+import { Link, useCurrentChannel } from "../lib/channel-ui";
 import { SITE, withSubject } from "@aihot/industry/site";
-import { Link, redirect, useLoaderData } from "react-router";
+import { redirect, useLoaderData } from "react-router";
 import type { Route } from "./+types/topic";
 import type { FeedItemSummary } from "@aihot/contracts/site";
 import { loadOr404 } from "../lib/api.server";
@@ -23,12 +26,12 @@ export async function loader({ params, request }: Route.LoaderArgs) {
   const page = params.page ? Number(params.page) : 1;
   if (params.page !== undefined && (!/^\d+$/.test(params.page) || page < 1)) throw new Response("Not found", { status: 404 });
   // Page 1 lives at the topic's own address (308).
-  if (params.page === "1") throw redirect(`/topics/${params.slug}`, 308);
-  const data = await loadOr404<TopicPageData>(`/api/site/topics/${encodeURIComponent(params.slug)}?page=${page}`, { signal: request.signal });
+  if (params.page === "1") throw redirect(channelPath(`/topics/${params.slug}`,channelForPath(new URL(request.url).pathname).key), 308);
+  const data = await loadOr404<TopicPageData>(`/api/site/topics/${encodeURIComponent(params.slug)}?page=${page}`, { request, signal: request.signal });
   return { data };
 }
 
-export function meta({ loaderData }: Route.MetaArgs) {
+function baseMeta({ loaderData }: Route.MetaArgs) {
   if (!loaderData) return [{ title: titled("主题不存在") }, { name: "robots", content: "noindex" }];
   const { topic, page } = loaderData.data;
   const path = page > 1 ? `/topics/${topic.slug}/page/${page}` : `/topics/${topic.slug}`;
@@ -43,6 +46,7 @@ export function meta({ loaderData }: Route.MetaArgs) {
 }
 
 export default function TopicPage() {
+  const contentLabel = useCurrentChannel().pilot ? "动态" : "精选";
   const { data } = useLoaderData<typeof loader>();
   const { topic, items, page, pageCount } = data;
   const href = (p: number) => (p <= 1 ? `/topics/${topic.slug}` : `/topics/${topic.slug}/page/${p}`);
@@ -60,7 +64,7 @@ export default function TopicPage() {
         <p className="mt-1 max-w-[640px] text-[13px] leading-relaxed text-ink-3">{topic.definition}</p>
         <div className="mt-3 flex flex-wrap items-baseline gap-x-5 gap-y-1">
           <span className="text-[12.5px] text-ink-4">
-            <span className="num mr-1 text-[20px] font-bold text-ink">{topic.total.toLocaleString("zh-CN")}</span>条精选
+            <span className="num mr-1 text-[20px] font-bold text-ink">{topic.total.toLocaleString("zh-CN")}</span>条{contentLabel}
           </span>
           {topic.related.length > 0 && (
             <span className="flex flex-wrap items-center gap-1.5 text-[12.5px]">
@@ -76,7 +80,7 @@ export default function TopicPage() {
       </header>
 
       <div className="mb-1 mt-2 flex items-baseline justify-between">
-        <h2 className="text-[18px] font-bold text-ink">最新精选</h2>
+        <h2 className="text-[18px] font-bold text-ink">最新{contentLabel}</h2>
         {items.length > 0 && (
           <span className="num text-[12px] text-ink-4">
             第 {first}–{last} 条 · 共 {topic.total.toLocaleString("zh-CN")} 条
@@ -85,7 +89,7 @@ export default function TopicPage() {
       </div>
       {items.length === 0 ? (
         <div className="lg:card">
-          <EmptyState title="这个主题暂时还没有精选内容" />
+          <EmptyState title={`这个主题暂时还没有${contentLabel}内容`} />
         </div>
       ) : (
         <DayList items={items} />
@@ -94,3 +98,5 @@ export default function TopicPage() {
     </div>
   );
 }
+
+export function meta(args: Route.MetaArgs) { return scopeMeta(baseMeta(args),args.location.pathname); }

@@ -1,3 +1,4 @@
+import { Anchor } from "../../lib/channel-ui";
 import { useState } from "react";
 import { Collapse } from "../../components/ui/Presence";
 import type { CodexResetContextPost } from "@aihot/contracts/monitor";
@@ -51,9 +52,9 @@ export function PostCard({ post, stage, avatar, compact = false }: { post: CardP
         <time className="num" dateTime={post.publishedAt ?? undefined}>
           {stamp(post.publishedAt)}
         </time>
-        <a href={post.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-0.5 text-accent transition-colors hover:text-accent-ink">
+        <Anchor href={post.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-0.5 text-accent transition-colors hover:text-accent-ink">
           在 X 查看 <IconArrowUpRight size={12} />
-        </a>
+        </Anchor>
       </footer>
       {hasTranslation && (
         <>

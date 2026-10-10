@@ -1,6 +1,8 @@
+import { ScopedRouterForm as Form } from "../../lib/channel-ui";
+import { Anchor } from "../../lib/channel-ui";
 import { SITE } from "@aihot/industry/site";
 import { useState } from "react";
-import { Form, useSearchParams } from "react-router";
+import { useSearchParams } from "react-router";
 import type { Route } from "./+types/feedback";
 import { adminGet } from "../../lib/admin.server";
 import { useAdminAction } from "../../features/admin/action";
@@ -53,8 +55,8 @@ function FeedbackCard({ f }: { f: Feedback }) {
         <span className="num font-medium text-ink-2">#{f.id}</span>
         <Badge tone={TONE[f.status] ?? "muted"}>{FEEDBACK_STATUS[f.status] ?? f.status}</Badge>
         <Time at={f.created_at} />
-        {f.email && <a className="text-accent" href={`mailto:${f.email}`}>{f.email}</a>}
-        {f.page_url && <a className="max-w-[320px] truncate hover:text-accent" href={f.page_url} target="_blank" rel="noreferrer">{f.page_url}</a>}
+        {f.email && <Anchor className="text-accent" href={`mailto:${f.email}`}>{f.email}</Anchor>}
+        {f.page_url && <Anchor className="max-w-[320px] truncate hover:text-accent" href={f.page_url} target="_blank" rel="noreferrer">{f.page_url}</Anchor>}
         {f.from_source > 1 && <Badge tone="info" title="同一来源（IP 与浏览器家族的不可逆标识）">同来源 {f.from_source} 条</Badge>}
         {f.banned && <Badge tone="bad">来源已封禁</Badge>}
         {!f.forwarded_at && f.status === "new" && (
@@ -63,9 +65,9 @@ function FeedbackCard({ f }: { f: Feedback }) {
       </div>
       <p className="mt-2.5 whitespace-pre-wrap text-[14px] leading-relaxed text-ink">{f.content}</p>
       {f.screenshot === "local" && (
-        <a href={`${base}/screenshot`} target="_blank" rel="noreferrer" className="mt-2 inline-block">
+        <Anchor href={`${base}/screenshot`} target="_blank" rel="noreferrer" className="mt-2 inline-block">
           <img src={`${base}/screenshot`} alt="反馈截图" loading="lazy" className="max-h-48 rounded-control ring-1 ring-line" />
-        </a>
+        </Anchor>
       )}
       {f.screenshot === "feishu" && <p className="mt-2 text-[12.5px] text-ink-4">截图已随反馈转到内部飞书群。</p>}
       {f.screenshot === "gone" && <p className="mt-2 text-[12.5px] text-ink-4">截图未能转到飞书，已删除。</p>}

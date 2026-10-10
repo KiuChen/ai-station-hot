@@ -1,6 +1,9 @@
+import { scopeMeta } from "../lib/channel-meta";
+import { channelFetch } from "../lib/channel-fetch";
+import { Form, Link } from "../lib/channel-ui";
 import { SITE, withSubject } from "@aihot/industry/site";
 import { useEffect, useRef, useState } from "react";
-import { Link, useSearchParams } from "react-router";
+import { useSearchParams } from "react-router";
 import { Presence } from "../components/ui/Presence";
 import { pageMeta } from "../lib/seo";
 import { KEYS } from "../lib/local-state";
@@ -13,7 +16,7 @@ export function headers() {
   return { "Cache-Control": "public, max-age=0, s-maxage=300, stale-while-revalidate=600" };
 }
 
-export function meta() {
+function baseMeta() {
   return pageMeta({ title: "反馈", description: `告诉 ${SITE.name} 哪里可以做得更好：内容、功能、接入或来源方的更正与下架请求。`, path: "/feedback", image: "/og/pages/feedback.png", noindex: true });
 }
 
@@ -118,7 +121,7 @@ export default function FeedbackPage() {
       form.set("email", draft.email);
       form.set("pageUrl", draft.pageUrl);
       if (shot) form.set("screenshot", shot.file);
-      const res = await fetch("/api/site/feedback", { method: "POST", body: form });
+      const res = await channelFetch("/api/site/feedback", { method: "POST", body: form });
       const body = await res.json().catch(() => ({}));
       if (!res.ok) return setState({ kind: "error", message: body.detail ?? "提交失败，请稍后再试。" });
       writeDraft(null);
@@ -159,7 +162,7 @@ export default function FeedbackPage() {
         <p className="mt-2 text-[14.5px] leading-relaxed text-ink-3">发现 bug、想要的功能、看不顺眼的地方，都可以告诉我，我都会看到。</p>
       </header>
 
-      <form
+      <Form
         onSubmit={submit}
         onDragOver={(e) => {
           e.preventDefault();
@@ -261,7 +264,9 @@ export default function FeedbackPage() {
             发送反馈
           </button>
         </div>
-      </form>
+      </Form>
     </ReadingLayout>
   );
 }
+
+export function meta(args: { location: { pathname: string } }) { return scopeMeta(baseMeta(),args.location.pathname); }

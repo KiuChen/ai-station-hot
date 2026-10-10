@@ -1,3 +1,4 @@
+import { closeAuthDb } from "@aihot/backend/auth-db";
 import { assertProductionSecrets, config } from "@aihot/backend/config";
 import { closeDb } from "@aihot/backend/db";
 import { startHeartbeat } from "@aihot/backend/operations/heartbeat";
@@ -24,6 +25,7 @@ const shutdown = async () => {
   stopping = true;
   await app.close();
 
+  await closeAuthDb();
   await closeDb();
   process.exit(0);
 };

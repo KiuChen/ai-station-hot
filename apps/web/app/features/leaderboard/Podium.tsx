@@ -1,4 +1,5 @@
-import { Link } from "react-router";
+import { Link } from "../../lib/channel-ui";
+
 import type { LbBoardEntry } from "@aihot/contracts/leaderboard";
 import { BrandMark } from "./BrandMark";
 import { EvidenceBadge } from "./Evidence";

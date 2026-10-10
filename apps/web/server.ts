@@ -1,3 +1,5 @@
+import { CHANNELS } from "@aihot/industry/channels";
+import { channelForPath, stripChannel } from "@aihot/industry/channels";
 // Production web server: built client assets, the shared redirect table and SSR. Api-owned paths are
 // proxied to the api process, so one port serves the whole site; a reverse proxy in front may also send
 // them to the api directly.
@@ -131,13 +133,17 @@ async function handle(req: import("node:http").IncomingMessage, res: import("nod
     return res.end(decision.location ? undefined : decision.status === 410 ? "Gone" : "Not found");
   }
 
-  if (isApiOwned(pathname)) {
+  const channel = channelForPath(pathname);
+  const apiPath = stripChannel(pathname);
+  if (isApiOwned(apiPath)) {
+    const target = channel.key === "ai" ? API : new URL(process.env[`CHANNEL_API_BASE_${channel.key.toUpperCase()}`] || `http://127.0.0.1:${CHANNELS.find(c=>c.key===channel.key)!.apiPort}`);
     // The visitor's address, decided here: the one the trusted proxy saw (the last X-Forwarded-For
     // entry), or this connection's own. Both headers carry only that.
     const forwarded = String(req.headers["x-forwarded-for"] ?? "").split(",").map((v) => v.trim()).filter(Boolean);
     const client = TRUST_PROXY && forwarded.length ? forwarded[forwarded.length - 1]! : (req.socket.remoteAddress ?? "");
     const headers = { ...req.headers, "x-forwarded-for": client, "x-real-ip": client };
-    const upstream = httpRequest({ hostname: API.hostname, port: API.port, path: raw, method: req.method, headers }, (up) => {
+    const upstream = httpRequest({ hostname: target.hostname, port: target.port, path: apiPath + search, method: req.method, headers }, (up) => {
+      if (channel.prefix && typeof up.headers.location === "string" && up.headers.location.startsWith("/") && !up.headers.location.startsWith(channel.prefix + "/") && up.headers.location !== channel.prefix) up.headers.location = channel.prefix + up.headers.location;
       res.writeHead(up.statusCode ?? 502, up.headers);
       up.pipe(res);
     });

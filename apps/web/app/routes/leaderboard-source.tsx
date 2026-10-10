@@ -1,5 +1,7 @@
+import { scopeMeta } from "../lib/channel-meta";
+import { Anchor, Link } from "../lib/channel-ui";
 import { SITE, withSubject } from "@aihot/industry/site";
-import { Link, useLoaderData } from "react-router";
+import { useLoaderData } from "react-router";
 import type { Route } from "./+types/leaderboard-source";
 import type { LbSourceDetail } from "@aihot/contracts/leaderboard";
 import { loadOr404 } from "../lib/api.server";
@@ -10,10 +12,10 @@ import { pct, shortStamp } from "../features/leaderboard/format";
 import { IconArrowLeft, IconArrowUpRight, IconChevronDown } from "../components/icons";
 
 export async function loader({ params, request }: Route.LoaderArgs) {
-  return loadOr404<LbSourceDetail>(`/api/site/leaderboard/sources/${encodeURIComponent(params.key)}`, { signal: request.signal });
+  return loadOr404<LbSourceDetail>(`/api/site/leaderboard/sources/${encodeURIComponent(params.key)}`, { request, signal: request.signal });
 }
 
-export function meta({ loaderData }: Route.MetaArgs) {
+function baseMeta({ loaderData }: Route.MetaArgs) {
   if (!loaderData) return [{ title: titled("页面不存在") }];
   const { source } = loaderData;
   const path = `/leaderboard/sources/${source.key}`;
@@ -75,14 +77,14 @@ export default function LeaderboardSourcePage() {
           </div>
         </div>
         {source.officialUrl && (
-          <a
+          <Anchor
             href={source.officialUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex h-8 shrink-0 items-center gap-1.5 self-start rounded-full border border-line-strong bg-surface px-3 text-[12.5px] text-ink-2 transition-colors hover:border-ink-4 hover:text-ink"
           >
             官方评测 <IconArrowUpRight size={13} />
-          </a>
+          </Anchor>
         )}
       </header>
 
@@ -166,3 +168,5 @@ export default function LeaderboardSourcePage() {
     </div>
   );
 }
+
+export function meta(args: Route.MetaArgs) { return scopeMeta(baseMeta(args),args.location.pathname); }

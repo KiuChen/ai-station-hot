@@ -1,3 +1,6 @@
+import { scopeMeta } from "../lib/channel-meta";
+import { useCurrentChannel } from "../lib/channel-ui";
+import { channelForPath } from "@aihot/industry/channels";
 import { SITE, withSubject } from "@aihot/industry/site";
 import { data, useLoaderData } from "react-router";
 import type { Route } from "./+types/report-detail";
@@ -8,6 +11,7 @@ import { beijingDate } from "../lib/format";
 import { ReportLayout } from "../features/report/ReportLayout";
 import { ReportPaper } from "../features/report/ReportPaper";
 import { KIND_LABEL, kindFromPath } from "../features/report/format";
+import {ReportAvailability,hasReportContent} from '../features/report/ReportAvailability';
 
 const PATTERN: Record<ReportKind, RegExp> = {
   daily: /^\d{4}-\d{2}-\d{2}$/,
@@ -20,13 +24,13 @@ export async function loader({ request, params }: Route.LoaderArgs) {
   const key = params.key ?? "";
   if (!PATTERN[kind].test(key)) throw data({ message: "not_found" }, { status: 404 });
   const [report, { items: index }] = await Promise.all([
-    loadOr404<ReportDetail>(`/api/site/reports/${kind}/${key}`, { signal: request.signal }),
-    apiGet<{ items: ReportNavigationEntry[] }>(`/api/site/reports/${kind}/navigation/${key}`, { signal: request.signal }),
+    loadOr404<ReportDetail>(`/api/site/reports/${kind}/${key}`, { request, signal: request.signal }),
+    apiGet<{ items: ReportNavigationEntry[] }>(`/api/site/reports/${kind}/navigation/${key}`, { request, signal: request.signal }),
   ]);
   return { report, index, today: beijingDate(Date.now()) };
 }
 
-export function meta({ loaderData }: Route.MetaArgs) {
+function baseMeta({ loaderData }: Route.MetaArgs) {
   if (!loaderData) return [{ title: titled("报告不存在") }, { name: "robots", content: "noindex" }];
   const r = loaderData.report;
   return pageMeta({
@@ -44,9 +48,13 @@ export function headers() {
 
 export default function ReportDetailPage() {
   const { report, index, today } = useLoaderData<typeof loader>();
+  const channel=useCurrentChannel();
+  if(channel.pilot&&!hasReportContent(report))return <ReportAvailability kind={report.kind} />;
   return (
     <ReportLayout kind={report.kind} index={index} current={report.key} today={today}>
       <ReportPaper report={report} index={index} />
     </ReportLayout>
   );
 }
+
+export function meta(args: Route.MetaArgs) { return scopeMeta(baseMeta(args),args.location.pathname); }

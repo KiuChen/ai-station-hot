@@ -1,6 +1,8 @@
+import { channelFetch } from "../../lib/channel-fetch";
+import { Anchor, Link } from "../../lib/channel-ui";
 // Moving between reports: the archive column on desktop, a tab row and recent-issue chips on phones.
 import { useEffect, useState } from "react";
-import { Link } from "react-router";
+
 import type { ReportNavigationEntry, ReportKind } from "@aihot/contracts/site";
 import { PillTabs } from "../../components/ui/Tabs";
 import { IconChevronRight } from "../../components/icons";
@@ -45,7 +47,7 @@ function ArchiveGroup({ g, kind, current, initiallyOpen }: {
   useEffect(() => {
     if (!open || loaded || kind !== "daily" || !g.entries.some((e) => e.title === undefined)) return;
     const controller = new AbortController();
-    fetch(`/api/site/reports/daily/months/${g.id}`, { signal: controller.signal })
+    channelFetch(`/api/site/reports/daily/months/${g.id}`, { signal: controller.signal })
       .then((r) => r.ok ? r.json() : null)
       .then((data: { items: ReportNavigationEntry[] } | null) => { if (data && !controller.signal.aborted) setLoaded(data.items); })
       .catch(() => {});
@@ -82,7 +84,7 @@ function ArchiveGroup({ g, kind, current, initiallyOpen }: {
           );
         })}
       </ul>}
-      {kind === "daily" && !open && <noscript><a href="/daily/archive">查看完整日报归档</a></noscript>}
+      {kind === "daily" && !open && <noscript><Anchor href="/daily/archive">查看完整日报归档</Anchor></noscript>}
     </details>
   );
 }

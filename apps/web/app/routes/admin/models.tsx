@@ -1,6 +1,7 @@
+import { Link } from "../../lib/channel-ui";
 import { SITE } from "@aihot/industry/site";
 import { useState } from "react";
-import { Link } from "react-router";
+
 import type { Route } from "./+types/models";
 import { adminGet } from "../../lib/admin.server";
 import { useAdminAction } from "../../features/admin/action";

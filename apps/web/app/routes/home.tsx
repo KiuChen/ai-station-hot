@@ -1,3 +1,5 @@
+import { scopeMeta } from "../lib/channel-meta";
+import { channelPath, channelForPath } from "@aihot/industry/channels";
 import { SITE, withSubject } from "@aihot/industry/site";
 import { data as withHeaders, redirect, useLoaderData } from "react-router";
 import type { Route } from "./+types/home";
@@ -15,18 +17,18 @@ export async function loader({ request }: Route.LoaderArgs) {
   const url = new URL(request.url);
   const q = url.searchParams.get("q");
   // Search lives on /all; keep the parameters so old links still land on results.
-  if (q && q.trim()) throw redirect(`/all${url.search}`);
+  if (q && q.trim()) throw redirect(channelPath(`/all${url.search}`,channelForPath(url.pathname).key));
   const channelParam = url.searchParams.get("channel") ?? "all";
   const categoryParam = url.searchParams.get("category");
   const channel = isChannelKey(channelParam) ? channelParam : "all";
   const category = categoryParam && isCategoryKey(categoryParam) ? categoryParam : null;
   const tag = url.searchParams.get("tag")?.trim() || null;
   const upstream = new Headers();
-  const data = await loadOr404<TimelineResponse>(`/api/site/timeline${queryString({ channel: channel === "all" ? null : channel, category, tag })}`, { responseHeaders: upstream, signal: request.signal });
+  const data = await loadOr404<TimelineResponse>(`/api/site/timeline${queryString({ channel: channel === "all" ? null : channel, category, tag })}`, { responseHeaders: upstream, request, signal: request.signal });
   return withHeaders({ data, filters: { channel, category, tag, topic: null } }, { headers: releaseBoundCache(data.refreshAt, 60, Date.now(), upstream) });
 }
 
-export function meta({ loaderData }: Route.MetaArgs) {
+function baseMeta({ loaderData }: Route.MetaArgs) {
   const f = loaderData?.filters;
   const path = listPath("/", { channel: f && f.channel !== "all" ? f.channel : null, category: f?.category, tag: f?.tag });
   return pageMeta({ path, jsonLd: path === "/" ? organizationLd() : undefined });
@@ -76,3 +78,5 @@ export default function Home() {
     </div>
   );
 }
+
+export function meta(args: Route.MetaArgs) { return scopeMeta(baseMeta(args),args.location.pathname); }

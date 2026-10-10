@@ -1,3 +1,5 @@
+import { PROFILE } from "@aihot/industry/profile";
+import { PROFILE_DIRECTORY } from "@aihot/industry/profile";
 import type { FeedItemSummary } from "@aihot/contracts/site";
 import { readFileSync } from "node:fs";
 import path from "node:path";
@@ -30,7 +32,7 @@ const countsCache = cached(queryTopicCounts, { freshMs: 60_000, maxStaleMs: 10 *
  * (industry/topics.json); every environment seeds them from there. Re-runnable.
  */
 export async function seedTopics(): Promise<number> {
-  const data = JSON.parse(readFileSync(path.join(REPO_ROOT, "industry/topics.json"), "utf8")) as {
+  const data = JSON.parse(readFileSync(path.join(REPO_ROOT, PROFILE_DIRECTORY, "topics.json"), "utf8")) as {
     topics: Array<{ slug: string; name: string; group: string; entityId?: string | null; tags: string[]; definition: string; related?: string[] }>;
   };
   let position = 0;
@@ -81,7 +83,7 @@ export function topicPageCounts(): Promise<TopicCount[]> {
 async function queryTopicCounts(): Promise<TopicCount[]> {
   const [topics, items] = await Promise.all([
     sql<Array<Pick<TopicRow, "slug" | "entity_id" | "tags">>>`SELECT slug, entity_id, tags FROM topics ORDER BY position`,
-    sql<{ tags: string[]; timeline_at: Date }[]>`SELECT p.tags, p.timeline_at FROM publications p WHERE p.visibility = 'public' AND p.selected`,
+    sql<{ tags: string[]; timeline_at: Date }[]>`SELECT p.tags, p.timeline_at FROM publications p WHERE p.visibility = 'public' AND (p.selected OR (${PROFILE.pilot} AND p.eligible))`,
   ]);
   const recentFrom = Date.now() - 30 * 86400_000;
   return topics.map((t) => {
@@ -138,7 +140,7 @@ export async function loadTopicPage(slug: string, page: number, now = new Date()
   const rows = await sql<ItemRow[]>`
     WITH page AS (
       SELECT p.article_id FROM publications p
-      WHERE ${selectedCondition(now)} AND p.tags && ${topicMatchTags(row)}::text[]
+      WHERE ${(PROFILE.pilot ? sql`p.visibility = 'public' AND p.eligible` : selectedCondition(now))} AND p.tags && ${topicMatchTags(row)}::text[]
       ORDER BY p.timeline_at DESC, p.article_id DESC
       LIMIT ${TOPIC_PAGE_SIZE} OFFSET ${(page - 1) * TOPIC_PAGE_SIZE})
     SELECT ${ITEM_COLUMNS} ${ITEM_FROM} WHERE p.article_id IN (SELECT article_id FROM page)

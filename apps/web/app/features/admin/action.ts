@@ -1,3 +1,5 @@
+import { useCurrentChannel } from "../../lib/channel-ui";
+import { channelFetch } from "../../lib/channel-fetch";
 // Client-side admin commands: same-origin fetch to /api/admin/* with the session's CSRF token, a
 // stable Idempotency-Key per submitted command, and a revalidation of the page's loaders on success.
 import { useCallback, useRef, useState } from "react";
@@ -19,7 +21,8 @@ export class AdminError extends Error {
 }
 
 export function useAdminMe(): AdminMe {
-  return (useRouteLoaderData("admin-layout") as { me: AdminMe } | undefined)?.me ?? { name: "", csrf: "", dev: false };
+  const channel = useCurrentChannel();
+  return (useRouteLoaderData(channel.key === "ai" ? "admin-layout" : `${channel.key}-admin-layout`) as { me: AdminMe } | undefined)?.me ?? { name: "", csrf: "", dev: false };
 }
 
 function newKey() {
@@ -45,7 +48,7 @@ export function useAdminAction() {
       keys.current.set(label, key);
       setPending(label);
       try {
-        const res = await fetch(path, {
+        const res = await channelFetch(path, {
           method,
           credentials: "same-origin",
           headers: { "content-type": "application/json", "x-csrf-token": me.csrf, "idempotency-key": key },

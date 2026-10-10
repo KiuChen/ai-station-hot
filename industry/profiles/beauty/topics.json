@@ -1,0 +1,116 @@
+{
+  "topics": [
+    {
+      "slug": "beauty-0",
+      "name": "彩妆",
+      "group": "field",
+      "tags": [
+        "彩妆"
+      ],
+      "definition": "关注彩妆相关资讯与实践。",
+      "related": []
+    },
+    {
+      "slug": "beauty-1",
+      "name": "护肤",
+      "group": "field",
+      "tags": [
+        "护肤"
+      ],
+      "definition": "关注护肤相关资讯与实践。",
+      "related": []
+    },
+    {
+      "slug": "beauty-2",
+      "name": "妆容",
+      "group": "field",
+      "tags": [
+        "妆容"
+      ],
+      "definition": "关注妆容相关资讯与实践。",
+      "related": []
+    },
+    {
+      "slug": "beauty-3",
+      "name": "配方",
+      "group": "field",
+      "tags": [
+        "配方"
+      ],
+      "definition": "关注配方相关资讯与实践。",
+      "related": []
+    },
+    {
+      "slug": "beauty-4",
+      "name": "成分",
+      "group": "field",
+      "tags": [
+        "成分"
+      ],
+      "definition": "关注成分相关资讯与实践。",
+      "related": []
+    },
+    {
+      "slug": "beauty-5",
+      "name": "产品比较",
+      "group": "field",
+      "tags": [
+        "产品比较"
+      ],
+      "definition": "关注产品比较相关资讯与实践。",
+      "related": []
+    },
+    {
+      "slug": "beauty-6",
+      "name": "使用方法",
+      "group": "field",
+      "tags": [
+        "使用方法"
+      ],
+      "definition": "关注使用方法相关资讯与实践。",
+      "related": []
+    },
+    {
+      "slug": "beauty-7",
+      "name": "审美趋势",
+      "group": "field",
+      "tags": [
+        "审美趋势"
+      ],
+      "definition": "关注审美趋势相关资讯与实践。",
+      "related": []
+    },
+    {
+      "slug": "beauty-balenciaga",
+      "name": "巴黎世家",
+      "group": "field",
+      "tags": [
+        "巴黎世家"
+      ],
+      "definition": "关注巴黎世家相关的已核验资讯。",
+      "related": []
+    },
+    {
+      "slug": "beauty-hermes",
+      "name": "爱马仕",
+      "group": "field",
+      "tags": [
+        "爱马仕"
+      ],
+      "definition": "关注爱马仕相关的已核验资讯。",
+      "related": []
+    },
+    {
+      "slug": "beauty-fashion",
+      "name": "时尚与秀场",
+      "group": "field",
+      "tags": [
+        "时尚",
+        "秀场",
+        "奢侈品牌"
+      ],
+      "definition": "关注时尚与秀场相关的已核验资讯。",
+      "related": []
+    }
+  ]
+}

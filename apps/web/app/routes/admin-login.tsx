@@ -1,3 +1,4 @@
+import { Anchor, Form } from "../lib/channel-ui";
 // Admin sign-in: the admin password (ADMIN_PASSWORD), and Feishu when it is configured. The form posts
 // straight to the API, which sets the session cookie and sends the browser on.
 import { useLoaderData } from "react-router";
@@ -16,8 +17,8 @@ const ERRORS: Record<string, string> = {
 export async function loader({ request }: Route.LoaderArgs) {
   const url = new URL(request.url);
   const returnTo = url.searchParams.get("return") ?? "/admin";
-  const options = await apiGet<{ password: boolean; feishu: boolean }>("/api/auth/options", { signal: request.signal }).catch(() => ({ password: true, feishu: false }));
-  return { returnTo: returnTo.startsWith("/admin") ? returnTo : "/admin", error: url.searchParams.get("error"), ...options };
+  const options = await apiGet<{ password: boolean; feishu: boolean }>("/api/auth/options", { request, signal: request.signal }).catch(() => ({ password: true, feishu: false }));
+  return { returnTo: /^\/(?:art\/)?admin(?:\/|\?|$)/.test(returnTo) ? returnTo : "/admin", error: url.searchParams.get("error"), ...options };
 }
 
 export const meta: Route.MetaFunction = () => [{ title: `登录 · ${SITE.name} 后台` }, { name: "robots", content: "noindex, nofollow" }];
@@ -34,7 +35,7 @@ export default function AdminLogin() {
           <Wordmark size={26} className="text-ink" />
           <span className="text-[15px] font-semibold text-ink-3">后台</span>
         </div>
-        <form method="post" action="/api/auth/password" className="card mt-8 p-6">
+        <Form method="post" action="/api/auth/password" className="card mt-8 p-6">
           <input type="hidden" name="return" value={returnTo} />
           <label htmlFor="password" className="block text-[13px] font-medium text-ink-2">
             管理员密码
@@ -57,15 +58,15 @@ export default function AdminLogin() {
             登录
           </button>
           {feishu && (
-            <a href={`/api/auth/feishu?${new URLSearchParams({ return: returnTo })}`} className={`${buttonClass("secondary", "lg")} mt-3 w-full`}>
+            <Anchor href={`/api/auth/feishu?${new URLSearchParams({ return: returnTo })}`} className={`${buttonClass("secondary", "lg")} mt-3 w-full`}>
               用飞书登录
-            </a>
+            </Anchor>
           )}
-        </form>
+        </Form>
         <p className="mt-6 text-center text-[12px] text-ink-4">
-          <a href="/" className="hover:text-ink-2">
+          <Anchor href="/" className="hover:text-ink-2">
             回到 {SITE.name}
-          </a>
+          </Anchor>
         </p>
       </div>
     </div>

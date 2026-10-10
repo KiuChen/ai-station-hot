@@ -1,0 +1,104 @@
+{
+  "topics": [
+    {
+      "slug": "cs2-0",
+      "name": "官方更新",
+      "group": "field",
+      "tags": [
+        "官方更新"
+      ],
+      "definition": "关注官方更新相关资讯与实践。",
+      "related": []
+    },
+    {
+      "slug": "cs2-1",
+      "name": "赛事",
+      "group": "field",
+      "tags": [
+        "赛事"
+      ],
+      "definition": "关注赛事相关资讯与实践。",
+      "related": []
+    },
+    {
+      "slug": "cs2-2",
+      "name": "战队",
+      "group": "field",
+      "tags": [
+        "战队"
+      ],
+      "definition": "关注战队相关资讯与实践。",
+      "related": []
+    },
+    {
+      "slug": "cs2-3",
+      "name": "选手",
+      "group": "field",
+      "tags": [
+        "选手"
+      ],
+      "definition": "关注选手相关资讯与实践。",
+      "related": []
+    },
+    {
+      "slug": "cs2-4",
+      "name": "战术",
+      "group": "field",
+      "tags": [
+        "战术"
+      ],
+      "definition": "关注战术相关资讯与实践。",
+      "related": []
+    },
+    {
+      "slug": "cs2-5",
+      "name": "训练",
+      "group": "field",
+      "tags": [
+        "训练"
+      ],
+      "definition": "关注训练相关资讯与实践。",
+      "related": []
+    },
+    {
+      "slug": "cs2-6",
+      "name": "地图",
+      "group": "field",
+      "tags": [
+        "地图"
+      ],
+      "definition": "关注地图相关资讯与实践。",
+      "related": []
+    },
+    {
+      "slug": "cs2-7",
+      "name": "设置",
+      "group": "field",
+      "tags": [
+        "设置"
+      ],
+      "definition": "关注设置相关资讯与实践。",
+      "related": []
+    },
+    {
+      "slug": "cs2-8",
+      "name": "外设",
+      "group": "field",
+      "tags": [
+        "外设"
+      ],
+      "definition": "关注外设相关资讯与实践。",
+      "related": []
+    },
+    {
+      "slug": "cs2-9",
+      "name": "社区创作",
+      "group": "field",
+      "tags": [
+        "社区创作"
+      ],
+      "definition": "关注社区创作相关资讯与实践。",
+      "related": []
+    }
+  ]
+}

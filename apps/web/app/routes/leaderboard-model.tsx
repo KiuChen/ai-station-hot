@@ -1,6 +1,8 @@
+import { scopeMeta } from "../lib/channel-meta";
+import { Anchor, Link } from "../lib/channel-ui";
 import { SITE, withSubject } from "@aihot/industry/site";
 import { useEffect, useState, type ReactNode } from "react";
-import { Link, useLoaderData, useSearchParams } from "react-router";
+import { useLoaderData, useSearchParams } from "react-router";
 import { Collapse } from "../components/ui/Presence";
 import type { Route } from "./+types/leaderboard-model";
 import type { LbComparison, LbEvidenceItem, LbModelDetail } from "@aihot/contracts/leaderboard";
@@ -13,10 +15,10 @@ import { boardHref, listPrice, pctFixed, shortStamp, tokensWan, yuan } from "../
 import { IconArrowLeft, IconArrowRight, IconArrowUpRight, IconChevronDown, IconExternal } from "../components/icons";
 
 export async function loader({ params, request }: Route.LoaderArgs) {
-  return loadOr404<LbModelDetail>(`/api/site/leaderboard/models/${encodeURIComponent(params.slug)}`, { signal: request.signal });
+  return loadOr404<LbModelDetail>(`/api/site/leaderboard/models/${encodeURIComponent(params.slug)}`, { request, signal: request.signal });
 }
 
-export function meta({ loaderData }: Route.MetaArgs) {
+function baseMeta({ loaderData }: Route.MetaArgs) {
   if (!loaderData) return [{ title: titled("页面不存在") }];
   const { model } = loaderData;
   const path = `/leaderboard/${model.slug}`;
@@ -269,7 +271,7 @@ function EvidenceCard({ it }: { it: LbEvidenceItem }) {
           <div className="flex gap-4 sm:col-span-2">
             <Link to={`/leaderboard/sources/${it.sourceKey}`} className="inline-flex items-center gap-1 font-medium text-accent">查看这项评测 <IconArrowRight size={13} /></Link>
             {it.officialUrl && (
-              <a href={it.officialUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-ink-3 hover:text-accent">官方来源 <IconExternal size={12} /></a>
+              <Anchor href={it.officialUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-ink-3 hover:text-accent">官方来源 <IconExternal size={12} /></Anchor>
             )}
           </div>
         </dl>
@@ -338,9 +340,9 @@ export default function LeaderboardModelPage() {
                   </span>
                 )}
                 {price.officialUrl && (
-                  <a href={price.officialUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-0.5 text-accent hover:text-accent-ink">
+                  <Anchor href={price.officialUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-0.5 text-accent hover:text-accent-ink">
                     厂商官方价格 <IconArrowUpRight size={12} />
-                  </a>
+                  </Anchor>
                 )}
               </span>
             ) : (
@@ -395,3 +397,5 @@ export default function LeaderboardModelPage() {
     </div>
   );
 }
+
+export function meta(args: Route.MetaArgs) { return scopeMeta(baseMeta(args),args.location.pathname); }

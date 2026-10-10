@@ -1,7 +1,9 @@
+import { channelFetch } from "../../lib/channel-fetch";
+import { Anchor, Link } from "../../lib/channel-ui";
 // Reading-group expansions on a feed item: the other sources of the card's fact ("另有 N 家信源报道")
 // and the event's developments ("展开 N 条进展"). Each loads on first open and pages on demand.
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { Link, useLocation } from "react-router";
+import { useLocation } from "react-router";
 import { Collapse } from "../../components/ui/Presence";
 import type { Development, GroupInfo, GroupReport, TimelineFilters } from "@aihot/contracts/site";
 import { IconArrowUpRight, IconChevronDown } from "../../components/icons";
@@ -90,11 +92,11 @@ function usePaged<T>(url: (cursor: string | null) => string, pick: (body: Record
     const active = () => latest.current === at && !controller.signal.aborted;
     setState((s) => ({ ...(s.scope === at ? s : EMPTY), scope: at, loading: true, error: false }));
     try {
-      let res = await fetch(url(cursor), { signal: controller.signal });
+      let res = await channelFetch(url(cursor), { signal: controller.signal });
       // An expired cursor gets one fresh first page, never an unbounded retry loop.
       if (res.status === 409 && cursor) {
         cursor = null;
-        res = await fetch(url(null), { signal: controller.signal });
+        res = await channelFetch(url(null), { signal: controller.signal });
       }
       if (!res.ok) throw new Error(String(res.status));
       const body = (await res.json()) as Record<string, unknown> & { nextCursor: string | null };
@@ -173,9 +175,9 @@ export function GroupSources({ group, filters, parentId }: { group: GroupInfo; f
               <Link to={`/items/${r.id}`} className="min-w-0 flex-1 truncate text-ink-2 hover:text-accent">
                 {r.title}
               </Link>
-              <a href={r.originalUrl} target="_blank" rel="noopener noreferrer" aria-label="打开原文" className="shrink-0 text-ink-4 hover:text-accent">
+              <Anchor href={r.originalUrl} target="_blank" rel="noopener noreferrer" aria-label="打开原文" className="shrink-0 text-ink-4 hover:text-accent">
                 <IconArrowUpRight size={13} />
-              </a>
+              </Anchor>
             </li>
           ))}
         </ul>

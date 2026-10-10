@@ -1,6 +1,13 @@
+import { taxonomyForChannel } from "@aihot/industry/taxonomy";
+import { channelPath } from "@aihot/industry/channels";
+import { ScopedRouterForm as Form } from "../../lib/channel-ui";
+import { useCurrentChannel } from "../../lib/channel-ui";
+import { CATEGORIES as AI_CATEGORIES } from "@aihot/industry/taxonomy-ai";
+import { CATEGORIES as ART_CATEGORIES } from "@aihot/industry/profiles/art/taxonomy";
+import { Link } from "../../lib/channel-ui";
 // Feed filters: the channel and category row, and search.
 import { useEffect, useRef, useState } from "react";
-import { Form, Link, useNavigation, useSearchParams } from "react-router";
+import { useNavigation, useSearchParams } from "react-router";
 import { CATEGORY_KEYS, CATEGORY_LABELS, CHANNEL_LABELS, type CategoryKey, type ChannelKey } from "@aihot/contracts/taxonomy";
 import { IconClose, IconSearch } from "../../components/icons";
 import { PillTabs } from "../../components/ui/Tabs";
@@ -28,7 +35,7 @@ export function CategoryTabs({ base, category, channel = "all", layoutId, size =
   const items = [
     { key: "all", label: "全部", to: hrefWith(base, params, { category: null, channel: null }) },
     { key: "firstParty", label: CHANNEL_LABELS.firstParty, to: hrefWith(base, params, { category: null, channel: "firstParty" }) },
-    ...CATEGORY_KEYS.map((k) => ({ key: k, label: CATEGORY_LABELS[k], to: hrefWith(base, params, { category: k, channel: null }) })),
+    ...taxonomyForChannel(useCurrentChannel().key).CATEGORIES.map(c=>c.key).map((k) => ({ key: k, label: CATEGORY_LABELS[k], to: hrefWith(base, params, { category: k, channel: null }) })),
   ];
   const active = channel === "firstParty" ? "firstParty" : (category ?? "all");
   return <PillTabs items={items} active={active} layoutId={layoutId} label="筛选" size={size} className={className} />;
@@ -52,6 +59,7 @@ function useSlashFocus(ref: React.RefObject<HTMLInputElement | null>) {
  * at the height of md tabs, with a "/" hint. Phones ("bar"): full width with a separate 搜索 button.
  */
 export function SearchField({ action = "/all", defaultValue = "", keep = {}, variant = "track", autoFocus = false }: { action?: string; defaultValue?: string; keep?: Record<string, string | null>; variant?: "track" | "bar"; autoFocus?: boolean }) {
+  const channel = useCurrentChannel();
   const [value, setValue] = useState(defaultValue);
   const navigation = useNavigation();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -60,7 +68,7 @@ export function SearchField({ action = "/all", defaultValue = "", keep = {}, var
   useEffect(() => {
     if (autoFocus) inputRef.current?.focus();
   }, [autoFocus]);
-  const searching = navigation.state === "loading" && navigation.location?.pathname === action && !!new URLSearchParams(navigation.location.search).get("q");
+  const searching = navigation.state === "loading" && navigation.location?.pathname === channelPath(action, channel.key) && !!new URLSearchParams(navigation.location.search).get("q");
   const hidden = Object.entries(keep).map(([k, v]) => (v ? <input key={k} type="hidden" name={k} value={v} /> : null));
 
   if (variant === "bar") {
@@ -68,14 +76,14 @@ export function SearchField({ action = "/all", defaultValue = "", keep = {}, var
       <Form method="get" action={action} role="search" className="flex gap-2">
         {hidden}
         <label className="relative flex-1">
-          <span className="sr-only">搜索标题、摘要与正文</span>
+          <span className="sr-only">搜索{channel.label}资讯的标题、摘要与正文</span>
           <IconSearch size={17} className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-4" />
           <input
             ref={inputRef}
             name="q"
             value={value}
             onChange={(e) => setValue(e.target.value)}
-            placeholder="搜索标题、摘要…"
+            placeholder={`搜索${channel.label}资讯…`}
             maxLength={200}
             autoComplete="off"
             enterKeyHint="search"
@@ -98,7 +106,7 @@ export function SearchField({ action = "/all", defaultValue = "", keep = {}, var
     <Form method="get" action={action} role="search" className="group relative w-full shrink-0 lg:w-60">
       {hidden}
       <label htmlFor="site-search" className="sr-only">
-        搜索标题、摘要与正文
+        搜索{channel.label}资讯的标题、摘要与正文
       </label>
       <IconSearch size={16} className={`pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 transition-colors ${searching ? "text-accent" : "text-ink-4 group-focus-within:text-ink-3"}`} />
       <input
@@ -107,7 +115,7 @@ export function SearchField({ action = "/all", defaultValue = "", keep = {}, var
         name="q"
         value={value}
         onChange={(e) => setValue(e.target.value)}
-        placeholder="搜索标题、摘要…"
+        placeholder={`搜索${channel.label}资讯…`}
         maxLength={200}
         autoComplete="off"
         className="h-[42px] w-full rounded-full bg-bg-sunk pl-10 pr-10 text-[14px] text-ink outline-none ring-1 ring-inset ring-line-soft transition-[background-color,box-shadow] placeholder:text-ink-4 hover:ring-line-strong focus:bg-surface focus:shadow-[0_0_0_3px_var(--accent-soft)] focus:ring-accent dark:bg-bg-muted/60 dark:focus:bg-surface"

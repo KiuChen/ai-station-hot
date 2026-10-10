@@ -1,3 +1,4 @@
+import { Anchor } from "../../lib/channel-ui";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Presence } from "./Presence";
 
@@ -54,9 +55,9 @@ export function MenuItem({ icon, children, onSelect, href, download }: { icon?: 
   );
   if (href) {
     return (
-      <a role="menuitem" href={href} download={download} onClick={onSelect} className={cls}>
+      <Anchor role="menuitem" href={href} download={download} onClick={onSelect} className={cls}>
         {inner}
-      </a>
+      </Anchor>
     );
   }
   return (

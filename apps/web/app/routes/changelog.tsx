@@ -1,6 +1,8 @@
+import { scopeMeta } from "../lib/channel-meta";
+import { Anchor, Link } from "../lib/channel-ui";
 import { SITE, withSubject } from "@aihot/industry/site";
 import { Fragment, useEffect, useState } from "react";
-import { Link, useLoaderData } from "react-router";
+import { useLoaderData } from "react-router";
 import { apiGet } from "../lib/api.server";
 import { pageMeta } from "../lib/seo";
 import { setChangelogSeen } from "../lib/local-state";
@@ -22,10 +24,10 @@ interface Release {
 }
 
 export async function loader({ request }: { request: Request }) {
-  return apiGet<{ latestVersion: string; releases: Release[] }>("/api/site/changelog", { signal: request.signal });
+  return apiGet<{ latestVersion: string; releases: Release[] }>("/api/site/changelog", { request, signal: request.signal });
 }
 
-export function meta() {
+function baseMeta() {
   return pageMeta({ title: "更新日志", description: `${SITE.name} 的功能更新、优化、公告与下线记录。`, path: "/changelog", image: "/og/pages/changelog.png" });
 }
 
@@ -105,9 +107,9 @@ export default function ChangelogPage() {
           {[...months.entries()].map(([month, m]) => {
             const [y, mo] = month.split("-").map(Number) as [number, number];
             return (
-              <a key={month} href={`#d-${m.first}`} className="flex items-center justify-between rounded-control px-2 py-2 text-[13.5px] text-ink-2 transition-colors hover:bg-bg-sunk hover:text-ink">
+              <Anchor key={month} href={`#d-${m.first}`} className="flex items-center justify-between rounded-control px-2 py-2 text-[13.5px] text-ink-2 transition-colors hover:bg-bg-sunk hover:text-ink">
                 {y} 年 {mo} 月<span className="num text-[12px] text-ink-4">{m.count} 条</span>
-              </a>
+              </Anchor>
             );
           })}
         </nav>
@@ -167,3 +169,5 @@ export default function ChangelogPage() {
     </ReadingLayout>
   );
 }
+
+export function meta(args: { location: { pathname: string } }) { return scopeMeta(baseMeta(),args.location.pathname); }

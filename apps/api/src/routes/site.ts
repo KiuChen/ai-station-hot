@@ -1,3 +1,5 @@
+import {PROFILE_KEY} from "@aihot/industry/profile";
+import {loadTrackingDirectory} from "@aihot/backend/publication/tracking";
 // First-party site API (/api/site/*). Not public, not versioned, never called /api/v2.
 // Reads through the same public read layer as v1; no cookies are read or set.
 import { FEATURES } from "@aihot/industry/features";
@@ -158,6 +160,11 @@ export function registerSite(app: FastifyInstance) {
   app.get("/api/site/contact", siteHandler(async (req, reply) => {
     const [contact, makerAvatar] = await Promise.all([loadContact(), loadMakerAvatar()]);
     return sendJsonWithEtag(req, reply, { ...contact, makerAvatar }, { etagPrefix: "contact", cacheControl: "public, max-age=300, s-maxage=300" });
+  }));
+
+  if (PROFILE_KEY === "art" || PROFILE_KEY === "cs2") app.get("/api/site/tracking", siteHandler(async (req, reply) => {
+    const type = String((req.query as {type?:string}).type || "all");
+    return sendJsonWithEtag(req, reply, await loadTrackingDirectory(type), {etagPrefix:"tracking",cacheControl:"public, max-age=60, s-maxage=60"});
   }));
 
   app.get("/api/site/stats", siteHandler(async (req, reply) => {

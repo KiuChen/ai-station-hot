@@ -1,3 +1,5 @@
+import {PROFILE_KEY} from "@aihot/industry/profile";
+import {authSql} from "../auth-db.ts";
 // Paid requests (models, SocialData, Jina, Dajiala) go through here.
 //
 // 1. A logical request has a stable key bound to task, input revision, provider, model, prompt and config.
@@ -81,10 +83,35 @@ interface ReceiptRow {
   updated_at: Date;
 }
 
-async function checkBudget(tx: Db, service: string): Promise<void> {
+interface SharedBudget {
+  tx: Db;
+  unlimited: boolean;
+  limits: { per_minute: number; per_hour: number; per_day: number };
+}
+
+/** Serialise attempt registration across databases; release the lock before the provider call. */
+async function withSharedBudget<T>(service: string, run: (budget?: SharedBudget) => Promise<T>): Promise<T> {
+  if (service !== "llm" || process.env.SHARED_MODEL_BUDGET_ENABLED !== "true") return run();
+  return authSql.begin(async tx => {
+    await tx`SELECT pg_advisory_xact_lock(hashtext('account-budget:llm'))`;
+    const [configured] = await tx<{ value: SharedBudget["limits"] }[]>`SELECT value FROM settings WHERE key='channel.account-budget'`;
+    const limits = configured?.value;
+    if (!limits || ![limits.per_minute, limits.per_hour, limits.per_day].every(n => Number.isInteger(n) && n > 0)) {
+      throw new Error("Shared model budget has not been initialized");
+    }
+    const [exception] = await tx<{ value: { until?: string } }[]>`SELECT value FROM settings WHERE key='channel.account-budget-exception'`;
+    const until = typeof exception?.value.until === "string" ? Date.parse(exception.value.until) : NaN;
+    const unlimited = Number.isFinite(until) && Date.now() < until;
+    await tx`DELETE FROM model_budget_attempts WHERE started_at < now() - interval '2 days'`;
+    return run({ tx, limits, unlimited });
+  }) as Promise<T>;
+}
+
+async function checkBudget(tx: Db, service: string, shared?: SharedBudget): Promise<void> {
+  if (shared?.unlimited) return;
   const [budget] = await tx<{ per_minute: number; per_hour: number; per_day: number }[]>`
     SELECT per_minute, per_hour, per_day FROM budgets WHERE service = ${service}`;
-  if (!budget) return; // default rows come with the migrations; a service an operator removed is unlimited
+  if (!budget && !shared) return; // Account limits still apply if a local budget row was removed.
   // Every request sent counts, retries of the same logical request included.
   const [counts] = await tx<{ minute: number; hour: number; day: number }[]>`
     SELECT
@@ -94,12 +121,38 @@ async function checkBudget(tx: Db, service: string): Promise<void> {
     FROM receipt_attempts
     WHERE service = ${service} AND origin = 'live' AND started_at > now() - interval '1 day'`;
   const c = counts!;
-  if (budget.per_minute <= 0 || budget.per_hour <= 0 || budget.per_day <= 0) {
+  if (budget && (budget.per_minute <= 0 || budget.per_hour <= 0 || budget.per_day <= 0)) {
     throw new BudgetExceededError(service, "stopped", 3600);
   }
-  if (c.minute >= budget.per_minute) throw new BudgetExceededError(service, "minute", 60);
-  if (c.hour >= budget.per_hour) throw new BudgetExceededError(service, "hour", 600);
-  if (c.day >= budget.per_day) throw new BudgetExceededError(service, "day", 3600);
+  if (budget && c.minute >= budget.per_minute) throw new BudgetExceededError(service, "minute", 60);
+  if (budget && c.hour >= budget.per_hour) throw new BudgetExceededError(service, "hour", 600);
+  if (budget && c.day >= budget.per_day) throw new BudgetExceededError(service, "day", 3600);
+  if (shared) {
+    const [total] = await shared.tx<{ minute: number; hour: number; day: number }[]>`
+      SELECT count(*) FILTER (WHERE started_at > now() - interval '1 minute') AS minute,
+        count(*) FILTER (WHERE started_at > now() - interval '1 hour') AS hour, count(*) AS day
+      FROM model_budget_attempts WHERE started_at > now() - interval '1 day'`;
+    for (const [window, limit, retry] of [["minute", shared.limits.per_minute, 60], ["hour", shared.limits.per_hour, 600], ["day", shared.limits.per_day, 3600]] as const) {
+      if (Number(total![window]) >= limit) throw new BudgetExceededError(service, `shared ${window}`, retry);
+    }
+    return;
+  }
+  // During migration the AI channel may already exceed its newly reserved share. Respect the old
+  // account envelope until that rolling usage expires; steady-state shares are bounded by setup.
+  if (PROFILE_KEY !== "ai" && service === "llm" && process.env.AUTH_DATABASE_URL) {
+    const [reserved] = await authSql<{value:{original:{per_minute:number;per_hour:number;per_day:number};envelope?:{per_minute:number;per_hour:number;per_day:number}}}[]>`
+      SELECT value FROM settings WHERE key=${`channel.${PROFILE_KEY}.budget-reserved`}`;
+    if (!reserved) throw new BudgetExceededError(service, "pilot allocation not prepared", 3600);
+    const [primary] = await authSql<{minute:number;hour:number;day:number}[]>`
+      SELECT count(*) FILTER (WHERE started_at>now()-interval '1 minute') AS minute,
+        count(*) FILTER (WHERE started_at>now()-interval '1 hour') AS hour,count(*) AS day
+      FROM receipt_attempts WHERE service=${service} AND origin='live' AND started_at>now()-interval '1 day'`;
+    const limits=reserved.value.envelope ?? reserved.value.original;
+    if (Number(primary!.minute)+Number(c.minute)>=limits.per_minute) throw new BudgetExceededError(service,"shared minute",60);
+    if (Number(primary!.hour)+Number(c.hour)>=limits.per_hour) throw new BudgetExceededError(service,"shared hour",600);
+    if (Number(primary!.day)+Number(c.day)>=limits.per_day) throw new BudgetExceededError(service,"shared day",3600);
+  }
+
 }
 
 /**
@@ -109,7 +162,7 @@ async function checkBudget(tx: Db, service: string): Promise<void> {
 export async function paidRequest(req: ReceiptRequest, call: () => Promise<CallOutcome>): Promise<ReceiptResult> {
   const logicalKey = logicalKeyFor(req);
 
-  const claimed = await sql.begin(async (tx) => {
+  const claimed = await withSharedBudget(req.service, shared => sql.begin(async (tx) => {
     // Serialise budget checks per service so concurrent workers cannot overshoot.
     await tx`SELECT pg_advisory_xact_lock(hashtext(${"budget:" + req.service}))`;
     const [existing] = await tx<ReceiptRow[]>`
@@ -123,21 +176,21 @@ export async function paidRequest(req: ReceiptRequest, call: () => Promise<CallO
       }
       if (existing.status === "unknown") return { kind: "unknown" as const, row: existing };
       // failed: the provider did not take the request, or its answer was unusable; a new attempt is allowed.
-      await checkBudget(tx, req.service);
+      await checkBudget(tx, req.service, shared);
       const [r] = await tx<{ attempts: number }[]>`
         UPDATE receipts SET status = 'pending', attempts = attempts + 1, error = NULL, updated_at = now() WHERE id = ${existing.id} RETURNING attempts`;
-      const attemptId = await startAttempt(tx, existing.id, r!.attempts, req);
+      const attemptId = await startAttempt(tx, existing.id, r!.attempts, req, shared);
       return { kind: "call" as const, id: existing.id, attemptId };
     }
-    await checkBudget(tx, req.service);
+    await checkBudget(tx, req.service, shared);
     const [row] = await tx<{ id: number }[]>`
       INSERT INTO receipts (logical_key, service, model, purpose, subject, status, request, attempts)
       VALUES (${logicalKey}, ${req.service}, ${req.model ?? null}, ${req.purpose}, ${req.subject ?? null}, 'pending',
               ${tx.json((req.requestSummary ?? {}) as never)}, 1)
       RETURNING id`;
-    const attemptId = await startAttempt(tx, row!.id, 1, req);
+    const attemptId = await startAttempt(tx, row!.id, 1, req, shared);
     return { kind: "call" as const, id: row!.id, attemptId };
-  });
+  }));
 
   if (claimed.kind === "reuse") return { receiptId: claimed.row.id, response: claimed.row.response, reused: true };
   if (claimed.kind === "busy") throw new ReceiptBusyError(`Receipt ${claimed.row.id} is in flight`);
@@ -184,10 +237,11 @@ export async function paidRequest(req: ReceiptRequest, call: () => Promise<CallO
   return { receiptId, response: outcome.response, reused: false };
 }
 
-async function startAttempt(tx: Db, receiptId: number, attempt: number, req: ReceiptRequest): Promise<number> {
-  const [row] = await tx<{ id: number }[]>`
+async function startAttempt(tx: Db, receiptId: number, attempt: number, req: ReceiptRequest, shared?: SharedBudget): Promise<number> {
+  const [row] = await tx<{ id: number; started_at: Date }[]>`
     INSERT INTO receipt_attempts (receipt_id, attempt, service, model, status) VALUES (${receiptId}, ${attempt}, ${req.service}, ${req.model ?? null}, 'pending')
-    RETURNING id`;
+    RETURNING id, started_at`;
+  if (shared) await shared.tx`INSERT INTO model_budget_attempts(channel,local_attempt_id,started_at) VALUES(${PROFILE_KEY},${row!.id},${row!.started_at})`;
   return row!.id;
 }
 

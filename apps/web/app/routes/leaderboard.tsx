@@ -1,5 +1,7 @@
+import { scopeMeta } from "../lib/channel-meta";
+import { Link } from "../lib/channel-ui";
 import { SITE, withSubject } from "@aihot/industry/site";
-import { Link, data, useLoaderData } from "react-router";
+import { data, useLoaderData } from "react-router";
 import type { Route } from "./+types/leaderboard";
 import type { LbBoardResponse } from "@aihot/contracts/leaderboard";
 import { loadOr404 } from "../lib/api.server";
@@ -15,10 +17,10 @@ const CATEGORY_KEYS = new Set(["coding", "reasoning", "knowledge", "professional
 export async function loader({ params, request }: Route.LoaderArgs) {
   const key = params.key ?? "overall";
   if (params.key !== undefined && !CATEGORY_KEYS.has(params.key)) throw data({ message: "not_found" }, { status: 404 });
-  return loadOr404<LbBoardResponse>(`/api/site/leaderboard/boards/${key}`, { signal: request.signal });
+  return loadOr404<LbBoardResponse>(`/api/site/leaderboard/boards/${key}`, { request, signal: request.signal });
 }
 
-export function meta({ loaderData }: Route.MetaArgs) {
+function baseMeta({ loaderData }: Route.MetaArgs) {
   if (!loaderData) return [{ title: titled("页面不存在") }];
   const { board, entries } = loaderData;
   const path = board.key === "overall" ? "/leaderboard" : `/leaderboard/category/${board.key}`;
@@ -102,3 +104,5 @@ export default function LeaderboardPage() {
     </div>
   );
 }
+
+export function meta(args: Route.MetaArgs) { return scopeMeta(baseMeta(args),args.location.pathname); }

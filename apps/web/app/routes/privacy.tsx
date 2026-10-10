@@ -1,3 +1,4 @@
+import { scopeMeta } from "../lib/channel-meta";
 import { SITE } from "@aihot/industry/site";
 import { pageMeta } from "../lib/seo";
 import { prepareCopy } from "../lib/site-copy";
@@ -11,7 +12,7 @@ export function headers() {
   return { "Cache-Control": "public, max-age=0, s-maxage=300, stale-while-revalidate=600" };
 }
 
-export function meta() {
+function baseMeta() {
   return pageMeta({ title: "隐私说明", description: `本站如何处理浏览器本地数据、反馈资料与访问日志。`, path: "/privacy", image: "/og/pages/privacy.png" });
 }
 
@@ -25,3 +26,5 @@ export default function PrivacyPage() {
     />
   );
 }
+
+export function meta(args: { location: { pathname: string } }) { return scopeMeta(baseMeta(),args.location.pathname); }

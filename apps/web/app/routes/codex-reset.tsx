@@ -1,3 +1,5 @@
+import { scopeMeta } from "../lib/channel-meta";
+import { channelFetch } from "../lib/channel-fetch";
 import { SITE, withSubject } from "@aihot/industry/site";
 import { useEffect, useState } from "react";
 import { useLoaderData, useRevalidator } from "react-router";
@@ -18,7 +20,7 @@ export async function loader({ request, params }: { request: Request; params: { 
   return { ...data, ...(day ? { selectedDate: day.date, events: day.events } : {}), serverNow: Date.now() };
 }
 
-export function meta() {
+function baseMeta() {
   return pageMeta({
     title: "Tibo重置监控",
     description: "跟踪 Tibo 公布的 Codex 额度重置与重置卡发放：推算的北京时间生效窗口、适用范围、中文原帖与历史日历。",
@@ -43,7 +45,7 @@ function useVersionPolling(version: string) {
       if (document.visibilityState !== "visible" || request) return;
       request = new AbortController();
       try {
-        const res = await fetch("/api/site/codex-reset/version", { cache: "no-store", signal: request.signal });
+        const res = await channelFetch("/api/site/codex-reset/version", { cache: "no-store", signal: request.signal });
         if (!res.ok) return;
         const v = (await res.json()) as { version: string };
         if (!stopped && v.version !== version) revalidator.revalidate();
@@ -251,3 +253,5 @@ function LiveMonitor({ d }: { d: CodexResetSitePage & { serverNow: number } }) {
     <ResetCalendar key={d.selectedDate} selectedDate={d.selectedDate} version={d.version} marks={d.calendar} events={d.events} today={d.today} historyFrom={d.historyFrom} now={now} avatar={d.authorAvatar} />
   </>;
 }
+
+export function meta(args: { location: { pathname: string } }) { return scopeMeta(baseMeta(),args.location.pathname); }

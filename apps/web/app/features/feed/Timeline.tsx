@@ -1,3 +1,5 @@
+import { channelListKey } from "../../lib/channel-switch";
+import { channelForPath, channelPath } from "@aihot/industry/channels";
 // The day-grouped feed (精选 home, topics): a time rail with cards on desktop, dated rows under grey
 // day bars on phones. Keeps its place across back navigation and loads further pages. There is no
 // "new items" prompt: readers refresh for the latest head (feedback #1199).
@@ -112,7 +114,7 @@ export function Timeline({ initial, filters }: { initial: TimelineResponse; filt
   const location = useLocation();
   const navigation = useNavigation();
   const readSet = useReadSet();
-  const historyKey = location.key;
+  const historyKey = channelListKey(location.pathname, filterQuery(filters), location.key);
 
   // Back navigation (client side): restore synchronously from the snapshot. A full reload restores
   // after hydration so the first client render matches the server HTML.
@@ -133,7 +135,7 @@ export function Timeline({ initial, filters }: { initial: TimelineResponse; filt
   // Filters (i.e. the loader data) changed. A page still loading for the old filters is cancelled, and a
   // response that arrives anyway is dropped (it belongs to another list and cursor). Back or forward to a
   // filter already visited restores what that history entry had loaded and folded; a new one starts over.
-  const filterKey = filterQuery(filters);
+  const filterKey = `${location.pathname}:${filterQuery(filters)}`;
   const lastFilterKey = useRef(filterKey);
   const pageRequest = useRef<AbortController | null>(null);
   useEffect(() => () => pageRequest.current?.abort(), []);
@@ -201,17 +203,19 @@ export function Timeline({ initial, filters }: { initial: TimelineResponse; filt
   const loadMore = useCallback(async () => {
     const s = stateRef.current;
     if (!s.nextCursor || pageRequest.current) return;
-    const key = filterQuery(filters);
+    const key = `${location.pathname}:${filterQuery(filters)}`;
+    const query = filterQuery(filters);
+    const channel = channelForPath(location.pathname).key;
     const controller = new AbortController();
     pageRequest.current = controller;
     const current = () => lastFilterKey.current === key && !controller.signal.aborted;
     setLoadingMore(true);
     setLoadError(false);
     try {
-      const res = await fetch(`/api/site/timeline?${filterQuery(filters, { cursor: s.nextCursor })}`, { signal: controller.signal });
+      const res = await fetch(channelPath(`/api/site/timeline?${filterQuery(filters, { cursor: s.nextCursor })}`, channel), { signal: controller.signal });
       if (res.status === 400) {
         // Cursor no longer fits: start over from the head.
-        const head = await fetch(`/api/site/timeline?${key}`, { signal: controller.signal });
+        const head = await fetch(channelPath(`/api/site/timeline?${query}`, channel), { signal: controller.signal });
         if (head.ok && current()) setState(fromResponse((await head.json()) as TimelineResponse));
         return;
       }
@@ -238,7 +242,7 @@ export function Timeline({ initial, filters }: { initial: TimelineResponse; filt
         setLoadingMore(false);
       }
     }
-  }, [filters]);
+  }, [filters, location.pathname]);
 
   // Auto-load a few batches when the sentinel nears the viewport, then hand over to a button.
   const sentinel = useRef<HTMLDivElement>(null);

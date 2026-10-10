@@ -1,3 +1,4 @@
+import { closeAuthDb } from "@aihot/backend/auth-db";
 // Worker process: queues and schedules for collection, processing, events, reports, monitors and ops.
 import { assertProductionSecrets } from "@aihot/backend/config";
 import { FEATURES } from "@aihot/industry/features";
@@ -37,6 +38,7 @@ const shutdown = async () => {
   console.log(JSON.stringify({ level: "info", msg: "worker stopping" }));
   clearInterval(heartbeat);
   await stopBoss();
+  await closeAuthDb();
   await closeDb();
   process.exit(0);
 };

@@ -1,6 +1,8 @@
+import { scopeMeta } from "../lib/channel-meta";
+import { Anchor, Link, useNavigate } from "../lib/channel-ui";
 import { SITE, withSubject } from "@aihot/industry/site";
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
-import { Link, useLoaderData, useNavigate } from "react-router";
+import { useLoaderData } from "react-router";
 import type { Route } from "./+types/item";
 import type { SiteItemDetail } from "@aihot/contracts/site";
 import { loadOr404 } from "../lib/api.server";
@@ -22,11 +24,11 @@ import { IconArrowLeft, IconCopy, IconDownload, IconExternal, IconImage, IconMen
 const PosterSheet = lazy(() => import("../features/item/PosterSheet"));
 
 export async function loader({ params, request }: Route.LoaderArgs) {
-  const item = await loadOr404<SiteItemDetail>(`/api/site/items/${encodeURIComponent(params.id)}`, { signal: request.signal });
+  const item = await loadOr404<SiteItemDetail>(`/api/site/items/${encodeURIComponent(params.id)}`, { request, signal: request.signal });
   return { item };
 }
 
-export function meta({ loaderData }: Route.MetaArgs) {
+function baseMeta({ loaderData }: Route.MetaArgs) {
   if (!loaderData) return [{ title: titled("内容不存在") }, { name: "robots", content: "noindex" }];
   const { item } = loaderData;
   return pageMeta({
@@ -170,14 +172,14 @@ export default function ItemPage() {
   // Desktop actions head the right rail, one row as tall as 返回 at the head of the left one.
   const actions = (
     <div className="flex items-center gap-1">
-      <a
+      <Anchor
         href={item.links.original}
         target="_blank"
         rel="noopener noreferrer"
         className="inline-flex h-8 flex-1 items-center justify-center gap-1.5 rounded-full border border-line-strong bg-surface px-3.5 text-[12.5px] font-medium text-ink-2 transition-colors hover:border-ink-4 hover:text-ink"
       >
         {originalLabel} <IconExternal size={13} />
-      </a>
+      </Anchor>
       <StarButton item={item} size={32} />
       {moreMenu}
     </div>
@@ -212,9 +214,9 @@ export default function ItemPage() {
         <ol className="-ml-px space-y-0.5 border-l border-line">
           {item.outline.map((o) => (
             <li key={o.id}>
-              <a href={`#${o.id}`} className={`-ml-px block border-l border-transparent py-1 text-[12.5px] leading-snug text-ink-3 transition-colors hover:border-accent hover:text-ink ${o.level > 2 ? "pl-5" : "pl-3"}`}>
+              <Anchor href={`#${o.id}`} className={`-ml-px block border-l border-transparent py-1 text-[12.5px] leading-snug text-ink-3 transition-colors hover:border-accent hover:text-ink ${o.level > 2 ? "pl-5" : "pl-3"}`}>
                 {o.text}
-              </a>
+              </Anchor>
             </li>
           ))}
         </ol>
@@ -254,9 +256,9 @@ export default function ItemPage() {
         {backButton}
         <span className="flex-1" />
         <StarButton item={item} size={32} />
-        <a href={item.links.original} target="_blank" rel="noopener noreferrer" className="inline-flex h-8 items-center gap-1 px-1.5 text-[14px] text-ink-2">
+        <Anchor href={item.links.original} target="_blank" rel="noopener noreferrer" className="inline-flex h-8 items-center gap-1 px-1.5 text-[14px] text-ink-2">
           <IconExternal size={15} /> 原文
-        </a>
+        </Anchor>
         <button type="button" aria-label="分享" onClick={share} className="inline-flex size-8 items-center justify-center rounded-full text-ink-3 hover:text-ink">
           <IconShare size={17} />
         </button>
@@ -354,9 +356,9 @@ export default function ItemPage() {
 
           <p className="mt-8 text-[13px] text-ink-4">
             来源：
-            <a href={item.links.original} target="_blank" rel="noopener noreferrer" className="text-ink-3 hover:text-accent">
+            <Anchor href={item.links.original} target="_blank" rel="noopener noreferrer" className="text-ink-3 hover:text-accent">
               {isX ? item.x!.authorName : item.source.name}
-            </a>
+            </Anchor>
             <span> · {hostOf(item.links.original)}</span>
           </p>
 
@@ -402,3 +404,5 @@ export default function ItemPage() {
     </div>
   );
 }
+
+export function meta(args: Route.MetaArgs) { return scopeMeta(baseMeta(args),args.location.pathname); }

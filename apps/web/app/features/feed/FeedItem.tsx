@@ -1,7 +1,8 @@
+import { Link, useCurrentChannel } from "../../lib/channel-ui";
 // One report in a feed. Desktop (≥ 961px): a white card beside the time rail. Mobile: a compact row
 // with a divider, the reason in a grey box. One markup, two presentations, as on the original site.
 import { memo } from "react";
-import { Link } from "react-router";
+
 import { IntentLink } from "../../components/ui/IntentLink";
 import type { GroupInfo, FeedItemSummary, TimelineFilters } from "@aihot/contracts/site";
 import { CATEGORY_LABELS } from "@aihot/contracts/taxonomy";
@@ -22,6 +23,7 @@ export interface FeedItemProps {
 }
 
 export const FeedItem = memo(function FeedItem({ item, group, filters, read = false, onOpen, showTags = false }: FeedItemProps) {
+  const channel = useCurrentChannel();
   const isX = item.channel === "x" && !!item.x;
   const open = () => onOpen?.(item.id);
   const showSources = !!group && (group.additionalSourceCount > 0 || (group.developmentCount <= 1 && group.reportCount > 1));
@@ -38,12 +40,12 @@ export const FeedItem = memo(function FeedItem({ item, group, filters, read = fa
           </span>
         )}
         <span className="ml-auto flex shrink-0 items-center gap-1.5 pl-2">
-          <span className="hidden lg:inline-flex">
+          {!channel.pilot && <span className="hidden lg:inline-flex">
             <ScoreLabel score={item.score} />
-          </span>
-          <span className="lg:hidden">
+          </span>}
+          {!channel.pilot && <span className="lg:hidden">
             <ScoreLabel score={item.score} compact />
-          </span>
+          </span>}
           <span className="-my-1 hidden lg:inline-flex">
             <StarButton item={item} />
           </span>

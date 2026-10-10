@@ -1,3 +1,4 @@
+import { fetchOfficialTracking } from "./official-tracking.ts";
 // Web list pages: HTML with selectors, Markdown through Jina Reader, and Docusaurus changelogs.
 import * as cheerio from "cheerio";
 import { guardedFetch } from "../lib/http-fetch.ts";
@@ -303,6 +304,7 @@ async function fromMimoHome(html: string, base: string, source: SourceRow): Prom
 }
 
 export async function fetchWebList(source: SourceRow): Promise<Candidate[]> {
+  if (source.config.adapter === "official_tracking") return fetchOfficialTracking(source);
   const { text, viaJina, base } = await fetchListingText(source);
   const mode = source.config.adapter === "mimo_home" ? "mimo_home" : source.config.parseMode ?? (viaJina ? "markdown" : "html");
   let out: Candidate[];

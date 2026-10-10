@@ -1,6 +1,7 @@
+import { Anchor, Link } from "../../lib/channel-ui";
 import { SITE } from "@aihot/industry/site";
 import { useState } from "react";
-import { Link } from "react-router";
+
 import type { Route } from "./+types/source";
 import { adminGet } from "../../lib/admin.server";
 import { useAdminAction } from "../../features/admin/action";
@@ -180,7 +181,7 @@ export default function SourceDetail({ loaderData }: Route.ComponentProps) {
             <ul className="space-y-2.5">
               {preview.items.map((i) => (
                 <li key={i.url} className="text-[13px]">
-                  <a href={i.url} target="_blank" rel="noreferrer" className="font-medium text-ink hover:text-accent">{i.title}</a>
+                  <Anchor href={i.url} target="_blank" rel="noreferrer" className="font-medium text-ink hover:text-accent">{i.title}</Anchor>
                   <div className="text-[12px] text-ink-4">{i.publishedAt ? bj(i.publishedAt, true) : "无发布时间"} · {i.url}</div>
                   {i.excerpt && <div className="mt-0.5 line-clamp-2 text-[12.5px] text-ink-3">{i.excerpt}</div>}
                 </li>

@@ -9,6 +9,7 @@ x-app: &app
   restart: unless-stopped
   environment: &app-env
     NODE_ENV: production
+    SHARED_MODEL_BUDGET_ENABLED: ${SHARED_MODEL_BUDGET_ENABLED:-false}
     DATABASE_URL: postgres://aihot:${POSTGRES_PASSWORD:-aihot}@db:5432/aihot
     AIHOT_DATA_DIR: /data
     API_BASE_URL: http://api:3001
@@ -69,11 +70,151 @@ services:
       <<: *app-env
       WEB_HOST: 0.0.0.0
       WEB_PORT: "3000"
+      CHANNEL_API_BASE_ART: http://art-api:3001
+      CHANNEL_API_BASE_BEAUTY: http://beauty-api:3001
+      CHANNEL_API_BASE_CS2: http://cs2-api:3001
     ports:
       - "${PORT:-3000}:3000"
     depends_on:
       api:
         condition: service_started
+      art-api:
+        condition: service_started
+      beauty-api:
+        condition: service_started
+      cs2-api:
+        condition: service_started
+
+  # One profile per process, isolated editorial databases and queues, shared admin sessions.
+  art-setup:
+    <<: *app
+    restart: "no"
+    command: ["node", "scripts/setup-channel.ts"]
+    environment: &art-env
+      <<: *app-env
+      SOURCE_INTERVAL_ADAPT_ENABLED: "false"
+      INDUSTRY_PROFILE: art
+      ART_PILOT_EXTRA_DAILY: ${ART_PILOT_EXTRA_DAILY:-0}
+      DATABASE_URL: postgres://aihot:${POSTGRES_PASSWORD:-aihot}@db:5432/aihot_art
+      AUTH_DATABASE_URL: postgres://aihot:${POSTGRES_PASSWORD:-aihot}@db:5432/aihot
+      SITE_URL: ${SITE_URL:-http://localhost:3000}/art
+      FEISHU_QUOTA_ALERT_ENABLED: "false"
+      MINIMAX_TOKEN_PLAN_MONITOR_ENABLED: "false"
+    depends_on:
+      setup:
+        condition: service_completed_successfully
+
+  art-api:
+    <<: *app
+    command: ["node", "apps/api/src/main.ts"]
+    environment:
+      <<: *art-env
+      API_HOST: 0.0.0.0
+      API_PORT: "3001"
+    depends_on:
+      art-setup:
+        condition: service_completed_successfully
+
+  art-worker:
+    <<: *app
+    command: ["node", "apps/worker/src/main.ts"]
+    stop_grace_period: 210s
+    environment:
+      <<: *art-env
+      FETCH_CONCURRENCY: "1"
+      ANALYZE_CONCURRENCY: "1"
+      DATABASE_POOL_MAX: "3"
+    depends_on:
+      art-setup:
+        condition: service_completed_successfully
+
+  beauty-setup:
+    <<: *app
+    restart: "no"
+    command: ["node", "scripts/setup-channel.ts"]
+    environment: &beauty-env
+      <<: *app-env
+      SOURCE_INTERVAL_ADAPT_ENABLED: "false"
+      INDUSTRY_PROFILE: beauty
+      DATABASE_URL: postgres://aihot:${POSTGRES_PASSWORD:-aihot}@db:5432/aihot_beauty
+      AUTH_DATABASE_URL: postgres://aihot:${POSTGRES_PASSWORD:-aihot}@db:5432/aihot
+      SITE_URL: ${SITE_URL:-http://localhost:3000}/beauty
+      AIHOT_DATA_DIR: /data/channels/beauty
+      COLLECT_ENABLED: "true"
+      MODEL_CALLS_ENABLED: "true"
+      DATABASE_POOL_MAX: "3"
+      FEISHU_QUOTA_ALERT_ENABLED: "false"
+      MINIMAX_TOKEN_PLAN_MONITOR_ENABLED: "false"
+    depends_on:
+      setup:
+        condition: service_completed_successfully
+
+  beauty-api:
+    <<: *app
+    command: ["node", "apps/api/src/main.ts"]
+    environment:
+      <<: *beauty-env
+      API_HOST: 0.0.0.0
+      API_PORT: "3001"
+    depends_on:
+      beauty-setup:
+        condition: service_completed_successfully
+
+  beauty-worker:
+    <<: *app
+    command: ["node", "apps/worker/src/main.ts"]
+    stop_grace_period: 210s
+    environment:
+      <<: *beauty-env
+      FETCH_CONCURRENCY: "1"
+      ANALYZE_CONCURRENCY: "1"
+    depends_on:
+      beauty-setup:
+        condition: service_completed_successfully
+
+  cs2-setup:
+    <<: *app
+    restart: "no"
+    command: ["node", "scripts/setup-channel.ts"]
+    environment: &cs2-env
+      <<: *app-env
+      SOURCE_INTERVAL_ADAPT_ENABLED: "false"
+      INDUSTRY_PROFILE: cs2
+      DATABASE_URL: postgres://aihot:${POSTGRES_PASSWORD:-aihot}@db:5432/aihot_cs2
+      AUTH_DATABASE_URL: postgres://aihot:${POSTGRES_PASSWORD:-aihot}@db:5432/aihot
+      SITE_URL: ${SITE_URL:-http://localhost:3000}/cs2
+      AIHOT_DATA_DIR: /data/channels/cs2
+      COLLECT_ENABLED: "true"
+      MODEL_CALLS_ENABLED: "true"
+      DATABASE_POOL_MAX: "3"
+      FEISHU_QUOTA_ALERT_ENABLED: "false"
+      MINIMAX_TOKEN_PLAN_MONITOR_ENABLED: "false"
+    depends_on:
+      setup:
+        condition: service_completed_successfully
+
+  cs2-api:
+    <<: *app
+    command: ["node", "apps/api/src/main.ts"]
+    environment:
+      <<: *cs2-env
+      API_HOST: 0.0.0.0
+      API_PORT: "3001"
+    depends_on:
+      cs2-setup:
+        condition: service_completed_successfully
+
+  cs2-worker:
+    <<: *app
+    command: ["node", "apps/worker/src/main.ts"]
+    stop_grace_period: 210s
+    environment:
+      <<: *cs2-env
+      FETCH_CONCURRENCY: "1"
+      ANALYZE_CONCURRENCY: "1"
+    depends_on:
+      cs2-setup:
+        condition: service_completed_successfully
 
   caddy:
     image: caddy:2-alpine

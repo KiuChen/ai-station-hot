@@ -1,15 +1,18 @@
-import { Link, useLocation } from "react-router";
-import { TABBAR, tabIsActive } from "./nav";
+import {useCurrentChannel} from "../../lib/channel-ui";
+import { Link } from "../../lib/channel-ui";
+import { useLocation } from "react-router";
+import { tabbarForChannel, tabIsActive } from "./nav";
 import { useChangelogDot } from "./Sidebar";
 
 /** Bottom tab bar of the mobile shell (up to 960px), as on the original site. */
 export function MobileTabBar({ changelogVersion }: { changelogVersion: string | null }) {
   const { pathname } = useLocation();
+  const channel=useCurrentChannel();
   const dot = useChangelogDot(changelogVersion);
   return (
     <nav aria-label="底部导航" className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-surface/95 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden">
       <div className="mx-auto grid h-[54px] max-w-[640px] grid-cols-4">
-        {TABBAR.map((t) => {
+        {tabbarForChannel(channel.key).map((t) => {
           const active = tabIsActive(t, pathname);
           const Icon = t.icon;
           return (

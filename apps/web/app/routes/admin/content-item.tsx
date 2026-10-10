@@ -1,6 +1,7 @@
+import { Anchor, Link } from "../../lib/channel-ui";
 import { SITE } from "@aihot/industry/site";
 import { useState, type ReactNode } from "react";
-import { Link } from "react-router";
+
 import { CATEGORY_KEYS, CATEGORY_LABELS } from "@aihot/contracts/taxonomy";
 import type { Route } from "./+types/content-item";
 import { adminGet } from "../../lib/admin.server";
@@ -84,11 +85,11 @@ export default function ContentItem({ loaderData }: Route.ComponentProps) {
           <span>·</span>
           <Link className="hover:text-accent" to={`/admin/sources/${encodeURIComponent(a.source_id)}`}>{a.source_name}</Link>
           <span>·</span>
-          <a className="max-w-[420px] truncate hover:text-accent" href={a.url} target="_blank" rel="noreferrer">{a.url}</a>
+          <Anchor className="max-w-[420px] truncate hover:text-accent" href={a.url} target="_blank" rel="noreferrer">{a.url}</Anchor>
           {p?.visibility !== "withdrawn" && p && (
             <>
               <span>·</span>
-              <a className="text-accent" href={`/items/${a.id}`} target="_blank" rel="noreferrer">公开页</a>
+              <Anchor className="text-accent" href={`/items/${a.id}`} target="_blank" rel="noreferrer">公开页</Anchor>
             </>
           )}
         </span>
@@ -232,7 +233,7 @@ export default function ContentItem({ loaderData }: Route.ComponentProps) {
                   </div>
                   {m.story_public_id && (
                     <div className="mt-0.5">
-                      事件 <a className="text-accent" href={`/story/${m.story_public_id}`} target="_blank" rel="noreferrer">{m.story_title}</a> <span className="font-mono text-[12px] text-ink-4">#{m.story_id}</span>
+                      事件 <Anchor className="text-accent" href={`/story/${m.story_public_id}`} target="_blank" rel="noreferrer">{m.story_title}</Anchor> <span className="font-mono text-[12px] text-ink-4">#{m.story_id}</span>
                     </div>
                   )}
                 </div>

@@ -1,3 +1,5 @@
+import { channelFetch } from "../../lib/channel-fetch";
+import { Anchor } from "../../lib/channel-ui";
 // Share poster sheet: the server-rendered poster (with a QR code to the article), to save or hand to the
 // system share sheet. Loaded on demand from the article page; slides up on phones, centred on desktop.
 import { useEffect, useState } from "react";
@@ -30,7 +32,7 @@ export default function PosterSheet({ id, title, open, onClose }: { id: string; 
 
   async function share() {
     try {
-      const blob = await (await fetch(src)).blob();
+      const blob = await (await channelFetch(src)).blob();
       await navigator.share({ files: [new File([blob], `${SITE.mcpPrefix}-${id}.png`, { type: "image/png" })], title });
     } catch {
       // cancelled or unsupported: saving stays available
@@ -70,13 +72,13 @@ export default function PosterSheet({ id, title, open, onClose }: { id: string; 
           </div>
           <p className="mt-3 text-[12.5px] text-ink-3">长按图片可保存或发送给朋友</p>
           <div className="mt-3 flex w-full max-w-[360px] gap-2">
-            <a
+            <Anchor
               href={src}
               download={`${SITE.mcpPrefix}-${id}.png`}
               className="inline-flex h-10 flex-1 items-center justify-center gap-1.5 rounded-full bg-accent text-[13.5px] font-medium text-accent-contrast transition-colors hover:bg-accent-ink"
             >
               <IconDownload size={15} /> 保存图片
-            </a>
+            </Anchor>
             {canShareFile && (
               <button type="button" onClick={share} className="inline-flex h-10 flex-1 items-center justify-center gap-1.5 rounded-full border border-line-strong bg-surface text-[13.5px] font-medium text-ink transition-colors hover:border-ink-4">
                 <IconShare size={15} /> 分享

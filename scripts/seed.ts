@@ -1,3 +1,4 @@
+import { PROFILE_DIRECTORY } from "@aihot/industry/profile";
 // Seeds a fresh site from the industry pack: the topics (industry/topics.json, updated in place), the
 // demo sources (industry/sources.json, only the ones not there yet, so admin edits are never undone) and,
 // with the leaderboard on, its model directory (only models and names not there yet).
@@ -33,7 +34,7 @@ if (process.argv.includes("--topics-only")) {
   process.exit(0);
 }
 
-const { sources } = JSON.parse(readFileSync(path.join(REPO_ROOT, "industry/sources.json"), "utf8")) as { sources: SeedSource[] };
+const { sources } = JSON.parse(readFileSync(path.join(REPO_ROOT, PROFILE_DIRECTORY, "sources.json"), "utf8")) as { sources: SeedSource[] };
 let added = 0;
 for (const s of sources) {
   assertSupportedConfig(s.kind, s.config);

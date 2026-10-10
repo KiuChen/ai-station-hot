@@ -1,3 +1,4 @@
+import { DAILY_REPORT_HOUR } from "@aihot/industry/reports";
 // Daily, weekly and monthly reports. Windows are Beijing calendar based and written into the report;
 // missed schedule points are caught up; regeneration creates a revision. The editors' prompts are in
 // the industry pack (industry/prompts/report-*.md), the sections follow its categories.
@@ -133,9 +134,9 @@ async function saveReport(kind: "daily" | "weekly" | "monthly", key: string, sta
   });
 }
 
-/** Daily report for Beijing date D covers [D-1 08:00, D 08:00) Beijing time. */
+/** Daily report for Beijing date D covers [D-1 edition time, D edition time) Beijing time. */
 export async function composeDaily(date: string, reason = "scheduled"): Promise<{ key: string; entries: number }> {
-  const end = new Date(beijingMidnight(date).getTime() + 8 * 3600 * 1000);
+  const end = new Date(beijingMidnight(date).getTime() + DAILY_REPORT_HOUR * 3600 * 1000);
   const start = new Date(end.getTime() - 86400000);
   const covered = await recentlyCovered("daily", date);
   const all = await candidates(start, end);
@@ -263,7 +264,7 @@ export async function catchUpReports(now = new Date(), days = 7): Promise<{ gene
   const today = beijingDate(now);
   const bjHour = Number(new Date(now.getTime() + 8 * 3600000).toISOString().slice(11, 13));
   const [first] = await sql<{ key: string | null }[]>`SELECT min(key) AS key FROM reports WHERE kind = 'daily'`;
-  const latestDue = bjHour >= 8 ? today : addDays(today, -1);
+  const latestDue = bjHour >= DAILY_REPORT_HOUR ? today : addDays(today, -1);
   for (let i = days - 1; i >= 0; i--) {
     if (shutdownSignal.signal.aborted) return { generated }; // the next hourly run continues
     const d = addDays(latestDue, -i);

@@ -1,6 +1,7 @@
+import { Link } from "../../lib/channel-ui";
 import { SITE } from "@aihot/industry/site";
 import { useState } from "react";
-import { Link, useFetcher } from "react-router";
+import { useFetcher } from "react-router";
 import { useEffect } from "react";
 import type { Route } from "./+types/runs";
 import { adminGet } from "../../lib/admin.server";

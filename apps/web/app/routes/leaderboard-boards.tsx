@@ -1,5 +1,6 @@
+import { Link } from "../lib/channel-ui";
 import { SITE, withSubject } from "@aihot/industry/site";
-import { Link, Outlet } from "react-router";
+import { Outlet } from "react-router";
 import { BoardTabs } from "../features/leaderboard/BoardTabs";
 import { IconArrowUpRight } from "../components/icons";
 

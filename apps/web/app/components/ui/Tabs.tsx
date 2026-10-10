@@ -1,5 +1,6 @@
+import { Link } from "../../lib/channel-ui";
 import { useLayoutEffect, useRef, type ReactNode } from "react";
-import { Link } from "react-router";
+
 import { IntentLink } from "./IntentLink";
 import { useEntrance } from "../../lib/hydration";
 

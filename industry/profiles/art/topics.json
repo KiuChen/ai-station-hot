@@ -1,0 +1,64 @@
+{
+  "topics": [
+    {
+      "slug": "art-0",
+      "name": "绘画",
+      "group": "field",
+      "tags": [
+        "绘画"
+      ],
+      "definition": "关注绘画相关的视觉艺术作品与实践。",
+      "related": []
+    },
+    {
+      "slug": "art-1",
+      "name": "插画",
+      "group": "field",
+      "tags": [
+        "插画"
+      ],
+      "definition": "关注插画相关的视觉艺术作品与实践。",
+      "related": []
+    },
+    {
+      "slug": "art-2",
+      "name": "摄影",
+      "group": "field",
+      "tags": [
+        "摄影"
+      ],
+      "definition": "关注摄影相关的视觉艺术作品与实践。",
+      "related": []
+    },
+    {
+      "slug": "art-3",
+      "name": "策展",
+      "group": "field",
+      "tags": [
+        "策展"
+      ],
+      "definition": "关注策展相关的视觉艺术作品与实践。",
+      "related": []
+    },
+    {
+      "slug": "art-4",
+      "name": "视觉设计",
+      "group": "field",
+      "tags": [
+        "视觉设计"
+      ],
+      "definition": "关注视觉设计相关的视觉艺术作品与实践。",
+      "related": []
+    },
+    {
+      "slug": "art-5",
+      "name": "材料技法",
+      "group": "field",
+      "tags": [
+        "材料技法"
+      ],
+      "definition": "关注材料技法相关的视觉艺术作品与实践。",
+      "related": []
+    }
+  ]
+}

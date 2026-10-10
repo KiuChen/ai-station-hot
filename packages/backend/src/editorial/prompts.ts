@@ -1,3 +1,4 @@
+import { PROFILE_DIRECTORY } from "@aihot/industry/profile";
 // Every editorial prompt lives in the industry pack as a Markdown file (industry/prompts/*.md), so a new
 // industry changes its taste by editing text, not code. Two template forms, nothing else:
 //   {{name}}     a value the calling step passes (plus siteName, from industry/site.ts)
@@ -10,7 +11,7 @@ import path from "node:path";
 import { SITE } from "@aihot/industry/site";
 import { REPO_ROOT } from "../config.ts";
 
-const DIR = path.join(REPO_ROOT, "industry/prompts");
+const DIR = path.join(REPO_ROOT, PROFILE_DIRECTORY, "prompts");
 const TOKEN = /\{\{(>\s*)?([A-Za-z][\w.-]*)\s*\}\}/g;
 
 const files = new Map<string, string>();

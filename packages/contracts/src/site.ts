@@ -387,3 +387,9 @@ export interface StoryFollowupsResponse { items: StoryFollowup[]; more: boolean 
 
 /** All issue keys keep numbering and calendars stable; closed daily months omit their titles. */
 export interface ReportNavigationEntry { key: string; title?: string | null; count?: number }
+
+export interface TrackingDirectory {
+ kind: 'tournament'|'exhibition'; generatedAt: string;
+ items: Array<{key:string;sourceId:string;title:string;url:string;organization:string;city:string;subtype:string;dateText:string;startsOn:string|null;endsOn:string|null;status:'current'|'closed'|'upcoming'|'ended'|'unverified';checkedAt:string;venue:string;timezone:string|null;phases:Array<{title:string;startsOn:string;endsOn:string}>}>;
+ sources: Array<{id:string;name:string;health:string;checkedAt:string|null}>;
+}

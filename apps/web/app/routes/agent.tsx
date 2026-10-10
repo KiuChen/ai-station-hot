@@ -1,5 +1,11 @@
+import { apiBaseFor } from "../lib/api.server";
+import { channelForPath,channelPath } from "@aihot/industry/channels";
+import { scopeMeta } from "../lib/channel-meta";
+import { channelFetch } from "../lib/channel-fetch";
+import { Anchor, Link, useNavigate } from "../lib/channel-ui";
+import { DAILY_REPORT_TIME } from "@aihot/industry/reports";
 import { useEffect, useState, type ReactNode } from "react";
-import { Link, useLoaderData, useNavigate, useSearchParams } from "react-router";
+import { useLoaderData, useSearchParams } from "react-router";
 import type { Route } from "./+types/agent";
 import { SITE, withSubject } from "@aihot/industry/site";
 import { FEATURES } from "@aihot/industry/features";
@@ -35,16 +41,16 @@ export async function loader({ request }: Route.LoaderArgs) {
   const tab = new URL(request.url).searchParams.get("tab");
   let healthy = true;
   try {
-    const res = await fetch(`${process.env.API_BASE_URL || "http://127.0.0.1:3001"}/api/health`, { signal: AbortSignal.any([request.signal, AbortSignal.timeout(3000)]) });
+    const res = await channelFetch(`${apiBaseFor(request)}/api/health`, { signal: AbortSignal.any([request.signal, AbortSignal.timeout(3000)]) });
     healthy = res.ok;
   } catch {
     healthy = false;
   }
   // The public address the examples show is the configured one, the same on the server and in the browser.
-  return { tab: (TABS.some((t) => t.key === tab) ? tab : "mcp") as TabKey, healthy, base: siteUrl() };
+  return { tab: (TABS.some((t) => t.key === tab) ? tab : "mcp") as TabKey, healthy, base: siteUrl() + channelForPath(new URL(request.url).pathname).prefix };
 }
 
-export function meta({ loaderData }: Route.MetaArgs) {
+function baseMeta({ loaderData }: Route.MetaArgs) {
   // Only the tab is part of the address (mcp is the default and not written).
   const path = listPath("/agent", { tab: loaderData && loaderData.tab !== "mcp" ? loaderData.tab : null });
   return pageMeta({ title: "Agent 接入", description: `让 Agent 直接使用 ${SITE.name}：MCP、RSS、REST API v1，匿名只读。`, path, image: "/og/pages/agent.png" });
@@ -112,7 +118,7 @@ function RssTab({ base }: { base: string }) {
     ["精选摘要（推荐）", "最新 50 条精选摘要，保留标题、站内阅读与原文入口。", "/feed.xml"],
     ["精选全文", "与精选摘要相同的最新 50 条；只对明确允许再分发的来源内联正文。", "/feed/full.xml"],
     ["最近 7 天全部动态", "最近 7 天公开动态，按真实发布时间倒序。", "/feed/all.xml"],
-    [withSubject("日报"), `每天 08:00 北京时间发布的${withSubject("日报")}，保留最近 30 期。`, "/feed/daily.xml"],
+    [withSubject("日报"), `每天 ${DAILY_REPORT_TIME} 北京时间发布的${withSubject("日报")}，保留最近 30 期。`, "/feed/daily.xml"],
   ];
   const categories = CATEGORY_KEYS.join("|");
   return (
@@ -167,7 +173,7 @@ function ApiTab({ base }: { base: string }) {
   return (
     <>
       <h2 className="text-[20px] font-bold text-ink">匿名 GET，不需要 token</h2>
-      <p className="mt-2 text-[14.5px] text-ink-3">浏览器跨域、curl 和默认 HTTP SDK 都可以直接用。临时查最近内容用 items；长期维护全部精选用一次快照加增量游标。字段与错误码以 <a href="/openapi-v1.json" className="text-accent hover:underline">OpenAPI 3.1</a> 为准。</p>
+      <p className="mt-2 text-[14.5px] text-ink-3">浏览器跨域、curl 和默认 HTTP SDK 都可以直接用。临时查最近内容用 items；长期维护全部精选用一次快照加增量游标。字段与错误码以 <Anchor href="/openapi-v1.json" className="text-accent hover:underline">OpenAPI 3.1</Anchor> 为准。</p>
       <CodeBlock title="第一个请求" lang="bash" code={`curl '${base}/api/v1/items?mode=selected&window=24h&limit=20'`} />
       <div className="overflow-x-auto rounded-card border border-line bg-surface">
         <table className="w-full min-w-[560px] text-left text-[13.5px]">
@@ -223,13 +229,13 @@ export default function AgentPage() {
       <AsideCard title="接入资源" className="hidden lg:block">
         <nav aria-label="接入资源" className="-mx-2 -mb-1">
           {RESOURCES.map(([l, h, note]) => (
-            <a key={h} href={h} className="group flex items-start gap-2 rounded-control px-2 py-2 transition-colors hover:bg-bg-sunk">
+            <Anchor key={h} href={h} className="group flex items-start gap-2 rounded-control px-2 py-2 transition-colors hover:bg-bg-sunk">
               <span className="min-w-0 flex-1">
                 <span className="block text-[13.5px] text-ink-2 group-hover:text-ink">{l}</span>
                 <span className="mt-0.5 block text-[12px] text-ink-4">{note}</span>
               </span>
               <IconArrowUpRight size={13} className="mt-1 shrink-0 text-ink-4" />
-            </a>
+            </Anchor>
           ))}
         </nav>
       </AsideCard>
@@ -259,9 +265,9 @@ export default function AgentPage() {
 
       <div className="mt-4 flex flex-wrap gap-x-5 gap-y-1.5 text-[12.5px] lg:hidden">
         {RESOURCES.map(([l, h]) => (
-          <a key={h} href={h} className="inline-flex items-center gap-1 text-ink-2 transition-colors hover:text-accent">
+          <Anchor key={h} href={h} className="inline-flex items-center gap-1 text-ink-2 transition-colors hover:text-accent">
             {l} <IconArrowUpRight size={12} className="text-ink-4" />
-          </a>
+          </Anchor>
         ))}
       </div>
 
@@ -277,3 +283,5 @@ export default function AgentPage() {
     </ReadingLayout>
   );
 }
+
+export function meta(args: Route.MetaArgs) { return scopeMeta(baseMeta(args),args.location.pathname); }

@@ -1,5 +1,7 @@
+import { scopeMeta } from "../lib/channel-meta";
+import { Link } from "../lib/channel-ui";
 import { SITE, withSubject } from "@aihot/industry/site";
-import { Link, useLoaderData } from "react-router";
+import { useLoaderData } from "react-router";
 import type { ReportIndexEntry } from "@aihot/contracts/site";
 import { apiGet } from "../lib/api.server";
 import { pageMeta } from "../lib/seo";
@@ -10,11 +12,11 @@ import { Rows, SectionPage } from "../features/report/ReportPaper";
 import { Nameplate } from "../features/report/Nameplate";
 
 export async function loader({ request }: { request: Request }) {
-  const { items: index } = await apiGet<{ items: ReportIndexEntry[] }>("/api/site/reports/daily", { signal: request.signal });
+  const { items: index } = await apiGet<{ items: ReportIndexEntry[] }>("/api/site/reports/daily", { request, signal: request.signal });
   return { index, today: beijingDate(Date.now()) };
 }
 
-export function meta() {
+function baseMeta() {
   return pageMeta({ title: `${withSubject("日报")} · 历史存档`, description: `${SITE.name} 历史日报，按日期归档。`, path: "/daily/archive", image: "/og/pages/daily.png" });
 }
 
@@ -67,3 +69,5 @@ export default function DailyArchive() {
     </ReportLayout>
   );
 }
+
+export function meta(args: { location: { pathname: string } }) { return scopeMeta(baseMeta(),args.location.pathname); }

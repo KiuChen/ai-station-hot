@@ -1,0 +1,228 @@
+{
+  "sources": [
+    {
+      "id": "beauty-rss-labmuffin",
+      "name": "Lab Muffin Beauty Science",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://labmuffin.com/feed/",
+        "sortByPublishedAt": true,
+        "_aihot": {
+          "initialBackfillLimit": 1
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "美妆"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "beauty-rss-allure",
+      "name": "Allure",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.allure.com/feed/rss",
+        "sortByPublishedAt": true,
+        "_aihot": {
+          "initialBackfillLimit": 1
+        },
+        "ingestNoiseFilter": {
+          "dropMarkersTitleOnly": [
+            "Prime Day",
+            "Black Friday",
+            "Cyber Monday",
+            "Beauty Box",
+            "coupon",
+            "promo code",
+            "sale alert",
+            "discount",
+            "折扣",
+            "优惠",
+            "促销"
+          ]
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "美妆"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "beauty-rss-beauty-independent",
+      "name": "Beauty Independent",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.beautyindependent.com/feed/",
+        "sortByPublishedAt": true,
+        "_aihot": {
+          "initialBackfillLimit": 1
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "美妆"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "beauty-rss-vogue",
+      "name": "Vogue",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.vogue.com/feed/rss",
+        "ingestNoiseFilter": {
+          "dropMarkersTitleOnly": [
+            "Prime Day",
+            "Black Friday",
+            "Cyber Monday",
+            "coupon",
+            "promo code",
+            "sweepstakes"
+          ]
+        },
+        "_aihot": {
+          "initialBackfillLimit": 1
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "时尚"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "beauty-rss-bazaar",
+      "name": "Harper’s Bazaar",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.harpersbazaar.com/rss/all.xml/",
+        "ingestNoiseFilter": {
+          "dropMarkersTitleOnly": [
+            "Prime Day",
+            "Black Friday",
+            "Cyber Monday",
+            "coupon",
+            "promo code",
+            "sweepstakes"
+          ]
+        },
+        "_aihot": {
+          "initialBackfillLimit": 1
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "时尚"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "beauty-rss-elle",
+      "name": "ELLE",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://www.elle.com/rss/all.xml/",
+        "ingestNoiseFilter": {
+          "dropMarkersTitleOnly": [
+            "Prime Day",
+            "Black Friday",
+            "Cyber Monday",
+            "coupon",
+            "promo code",
+            "sweepstakes"
+          ]
+        },
+        "_aihot": {
+          "initialBackfillLimit": 1
+        }
+      },
+      "tier": "T2",
+      "first_party": false,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "时尚"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true
+    },
+    {
+      "id": "beauty-rss-balenciaga",
+      "name": "Balenciaga · 官方刊物",
+      "kind": "rss",
+      "config": {
+        "feedUrl": "https://balenciaga.substack.com/feed",
+        "_aihot": {
+          "initialBackfillLimit": 1
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "时尚"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true,
+      "owner_entity_id": "balenciaga"
+    },
+    {
+      "id": "beauty-official-hermes",
+      "name": "Hermès · 官方新闻",
+      "kind": "web_list",
+      "config": {
+        "url": "https://finance.hermes.com/en/press-releases-and-news/",
+        "adapter": "official_tracking",
+        "tracking": {
+          "kind": "brand",
+          "parser": "hermes-press",
+          "organization": "Hermès"
+        },
+        "_aihot": {
+          "initialBackfillLimit": 1
+        }
+      },
+      "tier": "T1",
+      "first_party": true,
+      "participation_mode": "editorial",
+      "interval_minutes": 180,
+      "tags": [
+        "时尚"
+      ],
+      "site_fulltext": false,
+      "syndicate_fulltext": false,
+      "enabled": true,
+      "owner_entity_id": "hermes"
+    }
+  ]
+}

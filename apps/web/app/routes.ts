@@ -1,6 +1,7 @@
+import {CHANNELS} from "@aihot/industry/channels";
 import { type RouteConfig, index, layout, route } from "@react-router/dev/routes";
 
-export default [
+const aiRoutes: Array<ReturnType<typeof route>> = [
   index("routes/home.tsx"),
   route("all", "routes/all.tsx"),
   route("all/search-busy", "routes/search-busy.tsx", { id: "all-search-busy" }),
@@ -54,4 +55,19 @@ export default [
     route("admin/settings", "routes/admin/settings.tsx"),
     route("admin/audit", "routes/admin/audit.tsx"),
   ]),
-] satisfies RouteConfig;
+];
+
+const excluded = /leaderboard|codex-reset/;
+function scoped(entry: ReturnType<typeof route>, channel: typeof CHANNELS[number]): ReturnType<typeof route> {
+  const copy = { ...entry, id: channel.key + "-" + (entry.id ?? entry.file ?? entry.path ?? "layout").replace(/[^a-zA-Z0-9_-]/g,"-") };
+  if (copy.children) copy.children = copy.children.filter(r=>!excluded.test(r.file??"")).map(r=>scoped(r,channel));
+  if (copy.index) { copy.file = "routes/channel-home.tsx"; copy.id = channel.key + "-home"; }
+  return copy;
+}
+export default [route("cs2/events", "routes/tracking.tsx", {id:"cs2-tracking"}), route("art/exhibitions", "routes/tracking.tsx", {id:"art-tracking"}), ...aiRoutes, ...CHANNELS.filter(c=>c.prefix).flatMap(channel=>aiRoutes.filter(r=>!excluded.test(r.file??"")).map(r=>{
+ const copy=scoped(r,channel);
+ if (copy.index) { delete copy.index; copy.path=channel.prefix.slice(1); }
+ else if(copy.path) copy.path=channel.prefix.slice(1)+"/"+copy.path;
+ else if(copy.children) copy.children=copy.children.map(child=>({...child,path:child.path?channel.prefix.slice(1)+"/"+child.path:child.path}));
+ return copy;
+}))] satisfies RouteConfig;

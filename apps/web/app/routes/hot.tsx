@@ -1,5 +1,9 @@
+import { useCurrentChannel } from "../lib/channel-ui";
+import { channelForPath } from "@aihot/industry/channels";
+import { scopeMeta } from "../lib/channel-meta";
+import { Link } from "../lib/channel-ui";
 import { SITE, withSubject } from "@aihot/industry/site";
-import { Link, useLoaderData } from "react-router";
+import { useLoaderData } from "react-router";
 import type { HotEntryView, HotResponse } from "@aihot/contracts/site";
 import { loadOr404 } from "../lib/api.server";
 import { pageMeta } from "../lib/seo";
@@ -12,13 +16,14 @@ import { Faces } from "../features/hot/Faces";
 import { Delta } from "../features/hot/Delta";
 
 export async function loader({ request }: { request: Request }) {
-  return { hot: await loadOr404<HotResponse>("/api/site/hot", { signal: request.signal }) };
+  return { hot: await loadOr404<HotResponse>("/api/site/hot", { request, signal: request.signal }) };
 }
 
-export function meta() {
+function baseMeta(pathname: string) {
+  const channel = channelForPath(pathname);
   return pageMeta({
-    title: withSubject("热点榜"),
-    description: "过去 48 小时 AI 圈讨论最多的 10 个事件：热度指数、趋势与组成热度的公开来源。",
+    title: `${channel.subject}热点榜`,
+    description: `过去 48 小时${channel.subject}领域的热点事件、热度趋势与公开来源。`,
     path: "/hot",
     image: "/og/pages/hot.png",
   });
@@ -222,6 +227,7 @@ function Row({ e }: { e: HotEntryView }) {
 }
 
 export default function HotPage() {
+  const channel = useCurrentChannel();
   const { hot } = useLoaderData<typeof loader>();
   const [lead, ...rest] = hot.entries;
   const runners = rest.slice(0, 2);
@@ -237,8 +243,8 @@ export default function HotPage() {
             </span>
             实时热度
           </div>
-          <h1 className="mt-1.5 text-[24px] font-bold leading-[1.3] tracking-[-0.01em] text-ink lg:text-[26px]">{withSubject("热点榜")}</h1>
-          <p className="mt-1.5 text-[13.5px] text-ink-3">过去 {hot.windowHours} 小时，AI 圈讨论最多的 {hot.entries.length || 10} 件事</p>
+          <h1 className="mt-1.5 text-[24px] font-bold leading-[1.3] tracking-[-0.01em] text-ink lg:text-[26px]">{channel.subject}热点榜</h1>
+          <p className="mt-1.5 text-[13.5px] text-ink-3">过去 {hot.windowHours} 小时，{channel.subject}领域讨论最多的 {hot.entries.length || 10} 件事</p>
         </div>
         {hot.computedAt && (
           <p className="text-[12px] text-ink-4">
@@ -313,3 +319,5 @@ export default function HotPage() {
     </div>
   );
 }
+
+export function meta(args: { location: { pathname: string } }) { return scopeMeta(baseMeta(args.location.pathname),args.location.pathname); }

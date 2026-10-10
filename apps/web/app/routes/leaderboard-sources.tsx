@@ -1,5 +1,7 @@
+import { scopeMeta } from "../lib/channel-meta";
+import { Anchor, Link } from "../lib/channel-ui";
 import { SITE, withSubject } from "@aihot/industry/site";
-import { Link, useLoaderData } from "react-router";
+import { useLoaderData } from "react-router";
 import type { LbSourcesResponse } from "@aihot/contracts/leaderboard";
 import { loadOr404 } from "../lib/api.server";
 import { breadcrumbLd, pageMeta } from "../lib/seo";
@@ -9,10 +11,10 @@ import { pct } from "../features/leaderboard/format";
 import { IconArrowLeft, IconArrowUpRight } from "../components/icons";
 
 export async function loader({ request }: { request: Request }) {
-  return loadOr404<LbSourcesResponse>("/api/site/leaderboard/sources", { signal: request.signal });
+  return loadOr404<LbSourcesResponse>("/api/site/leaderboard/sources", { request, signal: request.signal });
 }
 
-export function meta() {
+function baseMeta() {
   return pageMeta({
     title: "评测来源",
     description: `了解 ${SITE.name} 采用和观察中的评测来源、方法与数据进展。`,
@@ -58,13 +60,13 @@ export default function LeaderboardSourcesPage() {
 
       <nav aria-label="来源分组" className="scrollbar-none -mx-4 mt-3 flex gap-2 overflow-x-auto px-4 pb-1 lg:mx-0 lg:flex-wrap lg:px-0">
         {groups.map((g) => (
-          <a
+          <Anchor
             key={g.key}
             href={`#${g.key}`}
             className="inline-flex h-8 shrink-0 items-center rounded-full border border-line bg-surface px-3 text-[12.5px] text-ink-3 transition-colors hover:border-line-strong hover:text-accent"
           >
             {g.name}
-          </a>
+          </Anchor>
         ))}
       </nav>
 
@@ -105,3 +107,5 @@ export default function LeaderboardSourcesPage() {
     </div>
   );
 }
+
+export function meta(args: { location: { pathname: string } }) { return scopeMeta(baseMeta(),args.location.pathname); }

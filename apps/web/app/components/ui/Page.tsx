@@ -1,5 +1,6 @@
+import { Link } from "../../lib/channel-ui";
 import type { ReactNode } from "react";
-import { Link } from "react-router";
+
 import { IconChevronRight } from "../icons";
 
 /**
