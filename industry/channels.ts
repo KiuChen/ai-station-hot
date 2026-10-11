@@ -7,6 +7,8 @@ export const CHANNELS = [
 ] as const;
 export type EditorialChannel = typeof CHANNELS[number]["key"];
 export function channelForPath(path: string) {
+  // React Router passes single-fetch URLs (e.g. /cs2.data) to server loaders.
+  path = path.replace(/\.data$/, "");
   return CHANNELS.find(c => c.prefix && (path === c.prefix || path.startsWith(c.prefix + "/"))) ?? CHANNELS[0];
 }
 export function channelPath(path: string, key: EditorialChannel) {

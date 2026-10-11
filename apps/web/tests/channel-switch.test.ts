@@ -55,3 +55,20 @@ test('new channels retain searches without crossing old domain filters',()=>{
  assert.equal(channelSwitchHref('/beauty/admin/content','?q=攻略','cs2',true),'/cs2/admin/content?q=%E6%94%BB%E7%95%A5');
  assert.notEqual(channelListKey('/beauty/all','','default'),channelListKey('/cs2/all','','default'));
 });
+
+
+test("single-fetch channel home requests use the same API scope as HTML and nested pages", async () => {
+  const previous = globalThis.fetch;
+  const calls: string[] = [];
+  globalThis.fetch = async (input) => { calls.push(String(input)); return Response.json({ items: [] }); };
+  try {
+    for (const [key, port] of [["art", 3002], ["beauty", 3003], ["cs2", 3004]] as const) {
+      for (const path of [`/${key}`, `/${key}.data`, `/${key}/all.data?q=SharedQuery`]) {
+        await apiGet("/api/site/pool", { request: new Request(`http://local${path}`) });
+        assert.equal(calls.at(-1), `${process.env[`CHANNEL_API_BASE_${key.toUpperCase()}`] || `http://127.0.0.1:${port}`}/api/site/pool`);
+      }
+    }
+    await apiGet("/api/site/pool", { request: new Request("http://local/artwork.data") });
+    assert.equal(calls.at(-1), `${process.env.API_BASE_URL || "http://127.0.0.1:3001"}/api/site/pool`);
+  } finally { globalThis.fetch = previous; }
+});

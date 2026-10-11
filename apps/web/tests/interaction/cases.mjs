@@ -33,6 +33,23 @@ export async function runInteraction({taskSpace,config}) {
   await goto(DOMAINS[key].prefix||'/',expected);await assertTitle(titleFor(key));
   await page.waitForFunction(()=>[...document.querySelectorAll('img[src^="/icon.png"]')].every(img=>img.complete&&img.naturalWidth>0));
  });
+
+ for (const width of [1280, 390]) await test('SWITCH-home-'+width,'无关键词连续切换首页更新任务卡与动态：'+width,async()=>{
+  await viewport(width);await goto('/','精选');
+  const check=async(key)=>{
+   const view=await observe();assert.ok(view.text.includes(titleFor(key)),key+' 首页必须加载本频道动态');
+   for(const other of Object.keys(DOMAINS).filter(k=>k!==key))assert.ok(!view.text.includes(titleFor(other)),'不能混入 '+other+' 动态');
+   const taskText=await page.evaluate(()=>document.querySelector('[aria-labelledby="channel-task"]')?.innerText||'');
+   if(key==='cs2'){assert.ok(taskText.includes('测试顶级赛事 S24'));assert.ok(!taskText.includes('护肤'));}
+   if(key==='art'){assert.ok(taskText.includes('上海常设展'));assert.ok(!taskText.includes('护肤'));}
+   if(key==='beauty'){assert.ok(taskText.includes('护肤'));assert.ok(!taskText.includes('测试顶级赛事'));}
+  };
+  for(const key of ['beauty','cs2','art','beauty','ai']){
+   await channel(DOMAINS[key].prefix);await waitHeading({ai:'精选',art:'艺术 · 看展与阅读',beauty:'美妆 · 时尚阅读',cs2:'CS2 · 当前赛事'}[key]);await check(key);
+  }
+  await page.evaluate(()=>history.back());await waitHeading('美妆 · 时尚阅读');await check('beauty');
+  await page.evaluate(()=>history.forward());await waitHeading('精选');await check('ai');
+ });
  for(const [key,tabs] of Object.entries({ai:['精选','全部','日报','更多'],art:['概览','看展','动态','更多'],beauty:['概览','动态','主题','更多'],cs2:['概览','赛事','动态','更多']}))await test('NAV-'+key,'手机频道主导航：'+key,async()=>{
   await viewport(390);await goto(DOMAINS[key].prefix||'/');assert.deepEqual((await observe()).tabs.split('\n'),tabs);
  });
