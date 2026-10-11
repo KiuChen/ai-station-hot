@@ -116,11 +116,13 @@ export interface TimelineResponse {
   /** Absolute time when a pending item in this scope becomes visible; the page re-checks then. */
   refreshAt: string | null;
   hot: HotStripEntry[] | null;
+  podcastRecommendations?: PodcastRecommendation[];
   dayCounts: Record<string, number>;
   generatedAt: string;
 }
 
 export interface PoolResponse {
+  podcastRecommendations?: PodcastRecommendation[];
   filters: TimelineFilters & { q: string | null; tab: "time" | "relevance" };
   items: FeedItemSummary[];
   page: number;
@@ -334,6 +336,8 @@ export interface ReportDetail {
   /** Reading order: every section item once, labelled with its section. */
   stories: Array<ReportCitation & { label: string }>;
   flashes: ReportCitation[];
+  /** Stored when the edition is composed; older editions have no podcast section. */
+  podcastRecommendations?: PodcastRecommendation[];
   /**
    * The front page's picture: from the lead item (a daily's lead, a weekly or monthly's first highlight),
    * else from another public report of that event. Captioned with the story when it is not the lead's own.
@@ -393,3 +397,10 @@ export interface TrackingDirectory {
  items: Array<{key:string;sourceId:string;title:string;url:string;organization:string;city:string;subtype:string;dateText:string;startsOn:string|null;endsOn:string|null;status:'current'|'closed'|'upcoming'|'ended'|'unverified';checkedAt:string;venue:string;timezone:string|null;phases:Array<{title:string;startsOn:string;endsOn:string}>}>;
  sources: Array<{id:string;name:string;health:string;checkedAt:string|null}>;
 }
+
+export interface PodcastProgram {id:string;name:string;language:'zh'|'en';topics:Array<'ai'|'economy'>;website:string;feedUrl:string;publisher:string;description:string}
+export interface PodcastEpisode {id:string;programId:string;title:string;description:string;publishedAt:string|null;durationSeconds:number|null;audioUrl:string;audioType:string;pageUrl:string|null}
+export interface PodcastSnapshot {version:1;updatedAt:string|null;programs:Record<string,{episodes:PodcastEpisode[];coverUrl:string|null;checkedAt:string|null;lastAttemptAt:string;health:'ok'|'error';feedUrl:string}>}
+export interface PodcastDirectory {programs:Array<PodcastProgram & {coverUrl:string|null;checkedAt:string|null;health:string}>;episodes:PodcastEpisode[];total:number;page:number;pageCount:number;updatedAt:string|null}
+
+export interface PodcastRecommendation {episode:PodcastEpisode;program:PodcastProgram;reason:string;topics:Array<'ai'|'economy'>;basis:'metadata';selectedAt:string}

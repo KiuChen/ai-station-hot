@@ -15,6 +15,7 @@ export async function startEnvironment(root) {
  const event={...trackingBase,key:'current-tier1',title:'测试顶级赛事 S24',organization:'测试主办方',city:'欧洲',subtype:'tier1',dateText:`${previousDay} — ${day}`,startsOn:previousDay,endsOn:day,timezone:'Asia/Shanghai',phases:[{title:'淘汰赛',startsOn:previousDay,endsOn:day},{title:'决赛',startsOn:day,endsOn:day}]};
  const report=key=>({kind:'daily',key:day,title:DOMAINS[key].label+'日报',windowStart:now,windowEnd:now,generatedAt:now,revision:1,lead:null,overview:null,highlights:[],sections:[],stories:[],flashes:[],cover:null,metrics:{},readingMinutes:1,prev:null,next:null});
  const apiBases={};
+ const podcastPicks=()=>[{program:{id:'pod-ai',name:'AI 回归节目',language:'en',topics:['ai'],website:'https://source.example/podcast',feedUrl:'https://source.example/feed',publisher:'测试出品',description:'固定测试说明'},episode:{id:'podcast-item-a',programId:'pod-ai',title:'AI播客回归单集',description:'测试摘要',publishedAt:now,durationSeconds:30,audioUrl:apiBases.ai+'/api/site/test-podcast-audio',audioType:'audio/wav',pageUrl:null},topics:['ai'],reason:'公开标题与简介包含 AI 研究访谈线索。',basis:'metadata',selectedAt:now}];
  for(const key of Object.keys(DOMAINS)) {
   const server=createServer(async(req,res)=>{
    const url=new URL(req.url,'http://local');requests.push({channel:key,path:url.pathname,query:url.search,method:req.method});
@@ -27,6 +28,16 @@ export async function startEnvironment(root) {
    if(state.failure===key&&url.pathname==='/api/site/pool')return json(503,{code:'temporarily_unavailable',detail:'temporarily unavailable'});
    if(state.failure==='busy-'+key&&url.pathname==='/api/site/pool')return json(503,{code:'temporarily_unavailable',detail:'search busy'});
    if(state.slowArt&&key==='art'&&url.pathname==='/api/site/pool')await new Promise(resolve=>setTimeout(resolve,700));
+   if(url.pathname==='/api/site/test-podcast-audio'){
+    const length=8000*30*2,buffer=Buffer.alloc(44+length);buffer.write('RIFF',0);buffer.writeUInt32LE(36+length,4);buffer.write('WAVE',8);buffer.write('fmt ',12);buffer.writeUInt32LE(16,16);buffer.writeUInt16LE(1,20);buffer.writeUInt16LE(1,22);buffer.writeUInt32LE(8000,24);buffer.writeUInt32LE(16000,28);buffer.writeUInt16LE(2,32);buffer.writeUInt16LE(16,34);buffer.write('data',36);buffer.writeUInt32LE(length,40);
+    const range=/bytes=(\d+)-(\d*)/.exec(req.headers.range||'');const start=range?Number(range[1]):0,end=range&&range[2]?Math.min(Number(range[2]),buffer.length-1):buffer.length-1;
+    res.writeHead(range?206:200,{'content-type':'audio/wav','accept-ranges':'bytes','content-length':end-start+1,...(range?{'content-range':`bytes ${start}-${end}/${buffer.length}`}:{})});return res.end(buffer.subarray(start,end+1));
+   }
+   if(url.pathname==='/api/site/podcasts'){
+    const programs=[{id:'pod-ai',name:'AI 回归节目',language:'en',topics:['ai'],website:'https://source.example/podcast',feedUrl:'https://source.example/feed',publisher:'测试出品',description:'固定测试说明',coverUrl:null,checkedAt:now,health:'ok'},{id:'pod-economy',name:'经济回归节目',language:'zh',topics:['economy'],website:'https://source.example/economy',feedUrl:'https://source.example/economy-feed',publisher:'测试出品',description:'中文经济测试说明',coverUrl:null,checkedAt:now,health:'ok'}];
+    const episodes=[{id:'podcast-item-a',programId:'pod-ai',title:'AI播客回归单集',description:'测试摘要',publishedAt:now,durationSeconds:30,audioUrl:apiBases.ai+'/api/site/test-podcast-audio',audioType:'audio/wav',pageUrl:null},{id:'podcast-item-b',programId:'pod-economy',title:'经济播客回归单集',description:'中文测试摘要',publishedAt:now,durationSeconds:30,audioUrl:apiBases.ai+'/api/site/test-podcast-audio',audioType:'audio/wav',pageUrl:null}].filter(e=>{const p=programs.find(p=>p.id===e.programId);return(!url.searchParams.get('program')||e.programId===url.searchParams.get('program'))&&(!url.searchParams.get('episode')||e.id===url.searchParams.get('episode'))&&(!url.searchParams.get('language')||p.language===url.searchParams.get('language'))&&(!url.searchParams.get('topic')||p.topics.includes(url.searchParams.get('topic')));});
+    return json(200,{programs,episodes,total:episodes.length,page:1,pageCount:1,updatedAt:now});
+   }
    if(url.pathname==='/api/site/meta')return json(200,{changelogVersion:'test-1'});
    if(url.pathname==='/api/site/contact')return json(200,{wechatQr:null,feishuQr:null});
    if(url.pathname==='/api/site/changelog')return json(200,{latestVersion:'test-1',releases:[]});
@@ -39,11 +50,14 @@ export async function startEnvironment(root) {
     const q=url.searchParams.get('q')||null,category=url.searchParams.get('category'),tag=url.searchParams.get('tag');
     const item=feedItem(key),items=(!q||JSON.stringify(item).toLowerCase().includes(q.toLowerCase()))&&(!category||category===item.category)&&(!tag||item.tags.includes(tag))?[item]:[];
     const filters={channel:url.searchParams.get('channel')||'all',category,tag,topic:null};
-    if(url.pathname.endsWith('/timeline'))return json(200,{filters,cards:items.map(item=>({key:item.id,anchorAt:now,item,group:null})),nextCursor:null,refreshAt:null,hot:null,dayCounts:{[day]:items.length},generatedAt:now});
-    return json(200,{filters:{...filters,q,tab:url.searchParams.get('tab')||'time'},items,page:1,pageCount:1,total:items.length,todayCount:items.length,freshness:now,generatedAt:now});
+    const podcastRecommendations=key==='ai'&&!q&&!category&&!tag&&!url.searchParams.get('cursor')?podcastPicks():[];
+    if(url.pathname.endsWith('/timeline'))return json(200,{podcastRecommendations,filters,cards:items.map(item=>({key:item.id,anchorAt:now,item,group:null})),nextCursor:null,refreshAt:null,hot:null,dayCounts:{[day]:items.length},generatedAt:now});
+    return json(200,{podcastRecommendations,filters:{...filters,q,tab:url.searchParams.get('tab')||'time'},items,page:1,pageCount:1,total:items.length,todayCount:items.length,freshness:now,generatedAt:now});
    }
    if(url.pathname==='/api/site/tracking')return json(200,{kind:key==='cs2'?'tournament':'exhibition',generatedAt:now,items:key==='cs2'?(state.emptyEvents?[]:[event]):exhibits,sources:[{id:'museum-source',name:'本地测试官方目录',health:'ok',checkedAt:now}]});
-   if(url.pathname==='/api/site/reports/daily/latest-page')return json(200,{index:[{key:day,count:0}],report:report(key)});
+   if(url.pathname==='/api/site/reports/daily/latest-page')return json(200,{index:[{key:day,count:0}],report:{...report(key),podcastRecommendations:key==='ai'?podcastPicks():[]}});
+   const periodic=/^\/api\/site\/reports\/(weekly|monthly)\/latest-page$/.exec(url.pathname);
+   if(periodic)return json(200,{index:[],report:{...report(key),kind:periodic[1],key:periodic[1]==='weekly'?'2026-W41':'2026-10',podcastRecommendations:key==='ai'?podcastPicks():[]}});
    if(url.pathname==='/api/site/reports/daily')return json(200,{items:[{key:day,count:0}]});
    return json(404,{code:'not_found'});
   });

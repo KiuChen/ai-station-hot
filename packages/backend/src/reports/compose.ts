@@ -1,3 +1,4 @@
+import {loadPodcastRecommendations} from '../publication/podcast-recommendations.ts';
 import { DAILY_REPORT_HOUR } from "@aihot/industry/reports";
 // Daily, weekly and monthly reports. Windows are Beijing calendar based and written into the report;
 // missed schedule points are caught up; regeneration creates a revision. The editors' prompts are in
@@ -157,7 +158,11 @@ export async function composeDaily(date: string, reason = "scheduled"): Promise<
   const ordered = sections.flatMap((s) => s.items).sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
   const model = await modelFor("report");
   const lead = ordered.length ? await writeLead("daily", date, ordered, model) : null;
+  const recent = await sql<{content:Record<string,any>}[]>`SELECT content FROM reports WHERE kind = 'daily' AND key < ${date} AND key >= ${addDays(date,-7)}`;
+  const excludedPodcasts=new Set<string>(recent.flatMap(r=>(r.content.podcastRecommendations??[]).map((p:any)=>p.episode?.id).filter(Boolean)));
+  const podcastRecommendations=await loadPodcastRecommendations('daily',start,end,excludedPodcasts);
   const content = {
+    podcastRecommendations,
     date,
     lead: lead?.lead ?? null,
     highlights: lead?.highlights ?? [],
@@ -223,7 +228,9 @@ async function composePeriod(kind: "weekly" | "monthly", key: string, startDate:
       storyRefs: t.refs.map((r) => top[Number(r) - 1]).filter((e): e is Candidate => !!e).map(({ category: _c, factKey: _f, ...e }) => e),
     }));
   }
+  const podcastRecommendations=await loadPodcastRecommendations(kind,start,end);
   const content = {
+    podcastRecommendations,
     kind,
     title: kind === "weekly" ? `${SITE.name} 周报 · ${key}` : `${SITE.name} 月报 · ${key}`,
     ...(kind === "weekly" ? { isoLabel: key } : { monthLabel: key }),

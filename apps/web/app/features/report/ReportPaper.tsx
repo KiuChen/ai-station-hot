@@ -1,3 +1,4 @@
+import {PodcastRecommendationCards} from '../podcasts/Recommendations';
 import {useCurrentChannel} from "../../lib/channel-ui";
 import { Anchor, Link } from "../../lib/channel-ui";
 // One report with a newspaper's structure in the site's own look: a nameplate with its 报眼 (the box
@@ -218,7 +219,7 @@ function FrontPage({ report, pages, leadStory, count }: { report: ReportDetail; 
   const highlights = report.highlights.filter((h) => !leadStory || keyOf(h) !== keyOf(leadStory)).slice(0, 3);
   const inPage = new Set(pages.flatMap((p) => p.items.map((c) => c.itemId)).filter(Boolean));
   const period = daily ? "今日" : report.kind === "weekly" ? "本周" : "本月";
-  const index = [...pages.map((p) => ({ id: p.id, label: p.label, n: `${p.items.length} 件` })), ...(report.flashes.length > 0 ? [{ id: "s-flash", label: "快讯", n: `${report.flashes.length} 条` }] : [])];
+  const index = [...(report.podcastRecommendations?.length?[{id:"s-podcasts",label:"推荐收听",n:`${report.podcastRecommendations.length} 集`}]:[]), ...pages.map((p) => ({ id: p.id, label: p.label, n: `${p.items.length} 件` })), ...(report.flashes.length > 0 ? [{ id: "s-flash", label: "快讯", n: `${report.flashes.length} 条` }] : [])];
 
   return (
     <section aria-label="头版" className="grid @[880px]:grid-cols-[minmax(0,1fr)_300px] @[1040px]:grid-cols-[minmax(0,1fr)_340px]">
@@ -371,7 +372,7 @@ export function ReportPaper({ report, index }: { report: ReportDetail; index: Re
     <article className="@container">
       <Masthead report={report} index={index} />
       {count === 0 && report.flashes.length === 0 ? (
-        <p className="py-16 text-center text-[14px] text-ink-4">本期没有入选内容。</p>
+        report.podcastRecommendations?.length ? null : <p className="py-16 text-center text-[14px] text-ink-4">本期没有入选内容。</p>
       ) : (
         <FrontPage report={report} pages={pages} leadStory={leadStory} count={count} />
       )}
@@ -410,6 +411,10 @@ export function ReportPaper({ report, index }: { report: ReportDetail; index: Re
         </SectionPage>
       )}
 
+      {!!report.podcastRecommendations?.length&&<SectionPage id="s-podcasts" no={pages.length+(report.flashes.length?2:1)} label="推荐收听">
+        <p className="mt-4 text-[13px] leading-6 text-ink-4">{daily?'本期新节目':report.kind==='weekly'?'本周推荐':'本月推荐'} · 根据公开标题与简介筛选，未核验音频全文；推荐在成刊时固定。</p>
+        <PodcastRecommendationCards items={report.podcastRecommendations} />
+      </SectionPage>}
       <Neighbours report={report} index={index} />
       {!daily && <History report={report} index={index} />}
       <footer className="py-10 text-center">

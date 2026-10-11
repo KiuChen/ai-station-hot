@@ -34,7 +34,7 @@ export default function MorePage() {
   const primary = new Set(tabbarForChannel(channel.key).map(item=>item.to));
   const remaining = sidebarForChannel(channel.key).flatMap(section=>section.items).filter(item=>!primary.has(item.to));
   const groups = [
-    {title:'内容与汇总',rows:remaining.filter(item=>['/hot','/daily','/topics','/leaderboard','/codex-reset','/agent'].includes(item.to)).map(item=>({to:item.to,label:item.label,icon:<item.icon size={18} />}))},
+    {title:'内容与汇总',rows:remaining.filter(item=>['/podcasts','/hot','/daily','/topics','/leaderboard','/codex-reset','/agent'].includes(item.to)).map(item=>({to:item.to,label:item.label,icon:<item.icon size={18} />}))},
     {title:'偏好',rows:remaining.filter(item=>item.to==='/starred').map(item=>({to:item.to,label:item.label,icon:<item.icon size={18} />}))},
     {title:'关于',rows:remaining.filter(item=>['/about','/changelog','/feedback'].includes(item.to)).map(item=>({to:item.to,label:item.label,icon:<item.icon size={18} />}))},
   ];

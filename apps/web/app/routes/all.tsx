@@ -1,3 +1,4 @@
+import {PodcastRecommendations} from '../features/podcasts/Recommendations';
 import { stripChannel } from "@aihot/industry/channels";
 import { scopeMeta } from "../lib/channel-meta";
 import { CHANNELS, channelForPath } from "@aihot/industry/channels";
@@ -125,6 +126,7 @@ export default function AllPage() {
         </div>
       )}
 
+      <PodcastRecommendations items={data.podcastRecommendations} />
       <div className={`transition-opacity duration-200 ${busy ? "opacity-50" : ""}`}>
         {data.items.length === 0 ? (
           <div className="mt-2 lg:card">

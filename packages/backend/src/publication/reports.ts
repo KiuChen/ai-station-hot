@@ -1,3 +1,4 @@
+import {publicPodcastRecommendations} from './podcast-recommendations.ts';
 // Reports through the public read layer: website DTOs and the v1 shapes. Only real reports are
 // listed; a missing date is a 404, never another day. Withdrawn citations are marked, not shown.
 import type { ReportCitation, ReportDetail, ReportIndexEntry, ReportNavigationEntry, ReportKind } from "@aihot/contracts/site";
@@ -243,6 +244,7 @@ export async function loadReport(kind: ReportKind, key: string): Promise<ReportD
     sections,
     stories,
     flashes: (c.flashes ?? []).map(cite),
+    podcastRecommendations:await publicPodcastRecommendations(c.podcastRecommendations),
     cover,
     metrics: c.metrics ?? {},
     readingMinutes: readingMinutes(text),

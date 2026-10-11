@@ -1,0 +1,233 @@
+{
+  "checkedOn": "2026-10-11",
+  "refreshHours": 6,
+  "programs": [
+    {
+      "id": "lex-fridman",
+      "name": "Lex Fridman Podcast",
+      "language": "en",
+      "topics": [
+        "ai"
+      ],
+      "website": "https://lexfridman.com/podcast/",
+      "feedUrl": "https://lexfridman.com/feed/podcast/",
+      "publisher": "Lex Fridman",
+      "description": "长访谈覆盖 AI、科研与更广泛的人文议题，按单集主题选择。",
+      "enabled": true
+    },
+    {
+      "id": "twiml",
+      "name": "TWIML AI Podcast",
+      "language": "en",
+      "topics": [
+        "ai"
+      ],
+      "website": "https://twimlai.com/",
+      "feedUrl": "https://feeds.megaphone.fm/MLN2155636147",
+      "publisher": "Sam Charrington",
+      "description": "机器学习研究与工程实践，关注大模型、Agent 和基础设施。",
+      "enabled": true
+    },
+    {
+      "id": "latent-space",
+      "name": "Latent Space",
+      "language": "en",
+      "topics": [
+        "ai"
+      ],
+      "website": "https://www.latent.space/podcast",
+      "feedUrl": "https://www.latent.space/feed",
+      "publisher": "Swyx、Alessio Fanelli",
+      "description": "AI 工程、开发工具与开源生态；仅提取订阅源中带音频的单集。",
+      "enabled": true
+    },
+    {
+      "id": "practical-ai",
+      "name": "Practical AI",
+      "language": "en",
+      "topics": [
+        "ai"
+      ],
+      "website": "https://practicalai.show/",
+      "feedUrl": "https://feeds.transistor.fm/practical-ai-machine-learning-data-science-llm",
+      "publisher": "Daniel Whitenack、Chris Benson",
+      "description": "AI 工程与应用落地，适合从实践视角理解技术。",
+      "enabled": true
+    },
+    {
+      "id": "mlst",
+      "name": "Machine Learning Street Talk",
+      "language": "en",
+      "topics": [
+        "ai"
+      ],
+      "website": "https://podcasters.spotify.com/pod/show/machinelearningstreettalk",
+      "feedUrl": "https://anchor.fm/s/1e4a0eac/podcast/rss",
+      "publisher": "Machine Learning Street Talk",
+      "description": "AI 基础研究、认知科学与哲学长谈，部分单集不限于 AI。",
+      "enabled": true
+    },
+    {
+      "id": "cognitive-revolution",
+      "name": "The Cognitive Revolution",
+      "language": "en",
+      "topics": [
+        "ai"
+      ],
+      "website": "https://www.cognitiverevolution.ai/",
+      "feedUrl": "https://feeds.megaphone.fm/RINTP3108857801",
+      "publisher": "Nathan Labenz",
+      "description": "AI 研究、产品与社会影响，偏深入访谈。",
+      "enabled": true
+    },
+    {
+      "id": "dwarkesh",
+      "name": "Dwarkesh Podcast",
+      "language": "en",
+      "topics": [
+        "ai",
+        "economy"
+      ],
+      "website": "https://www.dwarkesh.com/podcast",
+      "feedUrl": "https://apple.dwarkesh-podcast.workers.dev/feed.rss",
+      "publisher": "Dwarkesh Patel",
+      "description": "研究准备充分的长访谈，涉及 AI、经济与历史；并非每期都谈 AI。",
+      "enabled": true
+    },
+    {
+      "id": "no-priors",
+      "name": "No Priors",
+      "language": "en",
+      "topics": [
+        "ai",
+        "economy"
+      ],
+      "website": "https://podcasts.apple.com/us/podcast/id1668002688",
+      "feedUrl": "https://feeds.megaphone.fm/nopriors",
+      "publisher": "Sarah Guo、Elad Gil / Conviction",
+      "description": "AI 技术、创业与产业变化，带有明确创投视角。",
+      "enabled": true
+    },
+    {
+      "id": "sv101",
+      "name": "硅谷101",
+      "language": "zh",
+      "topics": [
+        "ai",
+        "economy"
+      ],
+      "website": "https://sv101.fireside.fm/",
+      "feedUrl": "https://feeds.fireside.fm/sv101/rss",
+      "publisher": "硅谷101",
+      "description": "技术、产业与商业的中文深度访谈，适合连接 AI 与经济议题。",
+      "enabled": true
+    },
+    {
+      "id": "zhang-xiaojun",
+      "name": "张小珺Jùn｜商业访谈录",
+      "language": "zh",
+      "topics": [
+        "ai",
+        "economy"
+      ],
+      "website": "https://www.xiaoyuzhoufm.com/podcast/626b46ea9cbbf0451cf5a962",
+      "feedUrl": "https://feed.xyzfm.space/dk4yh3pkpjp3",
+      "publisher": "张小珺",
+      "description": "创业、AI 与产业人物长访谈，适合深入了解一线经营视角。",
+      "enabled": true
+    },
+    {
+      "id": "planet-money",
+      "name": "Planet Money",
+      "language": "en",
+      "topics": [
+        "economy"
+      ],
+      "website": "https://www.npr.org/podcasts/510289/planet-money",
+      "feedUrl": "https://feeds.npr.org/510289/podcast.xml",
+      "publisher": "NPR",
+      "description": "用故事解释经济机制与商业现象，适合建立经济直觉。",
+      "enabled": true
+    },
+    {
+      "id": "indicator",
+      "name": "The Indicator from Planet Money",
+      "language": "en",
+      "topics": [
+        "economy"
+      ],
+      "website": "https://www.npr.org/podcasts/510325/the-indicator-from-planet-money",
+      "feedUrl": "https://feeds.npr.org/510325/podcast.xml",
+      "publisher": "NPR",
+      "description": "篇幅较短，解释经济数据、工作和商业中的具体问题。",
+      "enabled": true
+    },
+    {
+      "id": "macro-musings",
+      "name": "Macro Musings",
+      "language": "en",
+      "topics": [
+        "economy"
+      ],
+      "website": "https://www.mercatus.org/macro-musings",
+      "feedUrl": "https://rss.libsyn.com/shows/138806/destinations/865793.xml",
+      "publisher": "David Beckworth / Mercatus Center",
+      "description": "货币政策、央行与宏观经济的专业访谈。",
+      "enabled": true
+    },
+    {
+      "id": "odd-lots",
+      "name": "Odd Lots",
+      "language": "en",
+      "topics": [
+        "economy",
+        "ai"
+      ],
+      "website": "https://www.bloomberg.com/podcasts/odd_lots",
+      "feedUrl": "https://www.omnycontent.com/d/playlist/e73c998e-6e60-432f-8610-ae210140c5b1/8a94442e-5a74-4fa2-8b8d-ae27003a8d6b/982f5071-765c-403d-969d-ae27003a8d83/podcast.rss",
+      "publisher": "Bloomberg",
+      "description": "市场机制、宏观与产业访谈，也有 AI、算力和能源相关内容。",
+      "enabled": true
+    },
+    {
+      "id": "unhedged",
+      "name": "Unhedged",
+      "language": "en",
+      "topics": [
+        "economy"
+      ],
+      "website": "https://shows.acast.com/unhedged",
+      "feedUrl": "https://feeds.acast.com/public/shows/6478a825654260001190a7cb",
+      "publisher": "Financial Times",
+      "description": "金融市场、利率与全球经济的分析和讨论。",
+      "enabled": true
+    },
+    {
+      "id": "econtalk",
+      "name": "EconTalk",
+      "language": "en",
+      "topics": [
+        "economy"
+      ],
+      "website": "https://www.econtalk.org/",
+      "feedUrl": "https://feeds.simplecast.com/wgl4xEgL",
+      "publisher": "Russ Roberts",
+      "description": "经济学思维与公共议题的长对话，范围也包含社会与哲学。",
+      "enabled": true
+    },
+    {
+      "id": "zhixing",
+      "name": "知行小酒馆",
+      "language": "zh",
+      "topics": [
+        "economy",
+        "ai"
+      ],
+      "website": "https://www.xiaoyuzhoufm.com/podcast/6013f9f58e2f7ee375cf4216",
+      "feedUrl": "https://feed.xyzfm.space/j8yp8gxkmgqr",
+      "publisher": "有知有行",
+      "description": "投资、经济与生活的中文讨论；AI 相关单集可作为交叉阅读。",
+      "enabled": true
+    }
+  ]
+}

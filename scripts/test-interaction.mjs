@@ -13,7 +13,7 @@ if(previous){
 }
 await writeFile(path.join(output,'results.json'),JSON.stringify({complete:false,generatedAt:new Date().toISOString()}));
 const environment=await startEnvironment(root);
-const config={root,output,origin:environment.origin};
+const config={root,output,origin:environment.origin,spaceId:Number(process.env.EGO_TASKSPACE_ID)||null};
 // Control is local to the runner; API fixtures never forward a request to external services.
 const control=await import('node:http');
 const controller=control.createServer((req,res)=>{const url=new URL(req.url,'http://local');if(req.method!=='GET'){res.writeHead(405);return res.end();}if(url.pathname==='/state'){for(const [key,value] of url.searchParams)if(key in environment.state)environment.state[key]=value==='null'?null:value==='true'?true:value==='false'?false:value;res.end('ok');}else if(url.pathname==='/requests'){res.setHeader('content-type','application/json');res.end(JSON.stringify(environment.requests));}else{res.writeHead(404);res.end();}});

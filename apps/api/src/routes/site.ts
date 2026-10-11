@@ -1,3 +1,5 @@
+import {loadPodcastRecommendations} from '@aihot/backend/publication/podcast-recommendations';
+import {loadPodcastDirectory} from '@aihot/backend/publication/podcasts';
 import {PROFILE_KEY} from "@aihot/industry/profile";
 import {loadTrackingDirectory} from "@aihot/backend/publication/tracking";
 // First-party site API (/api/site/*). Not public, not versioned, never called /api/v2.
@@ -93,13 +95,14 @@ export function registerSite(app: FastifyInstance) {
     const filters = await parseFilters(q);
     const limit = Math.min(Math.max(Number(q.limit) || 20, 1), 40);
     const unfiltered = filters.channel === "all" && !filters.category && !filters.tag && !filters.topic && !q.cursor;
-    const [data, hot] = await Promise.all([
+    const [data, hot, podcastRecommendations] = await Promise.all([
       loadTimeline({ ...filters, cursor: q.cursor || null, limit }),
       unfiltered ? loadHotStrip() : null,
+      unfiltered ? loadPodcastRecommendations().catch(error=>{req.log.warn({err:error},"podcast recommendations unavailable");return [];}) : [],
     ]);
-    const body = { ...data, hot, generatedAt: new Date().toISOString() };
+    const body = { ...data, hot, podcastRecommendations, generatedAt: new Date().toISOString() };
     const cc = cacheUntil(reply, 60, data.refreshAt);
-    return sendJsonWithEtag(req, reply, body, { etagPrefix: "tl", cacheControl: cc, etagOf: { ...data, hot } });
+    return sendJsonWithEtag(req, reply, body, { etagPrefix: "tl", cacheControl: cc, etagOf: { ...data, hot, podcastRecommendations } });
   }));
 
   app.get("/api/site/pool", siteHandler(async (req, reply) => {
@@ -109,8 +112,11 @@ export function registerSite(app: FastifyInstance) {
     const search = q.q?.trim() ? q.q.trim().slice(0, 200) : null;
     const tab = q.tab === "relevance" ? "relevance" : "time";
     const data = await loadPool({ ...filters, q: search, tab, page });
-    const { generatedAt: _, ...content } = data;
-    return sendJsonWithEtag(req, reply, data, { etagPrefix: "pool", cacheControl: "public, max-age=60, s-maxage=60", etagOf: content });
+    const podcastRecommendations=page===1&&!search&&filters.channel==='all'&&!filters.category&&!filters.tag&&!filters.topic
+      ? await loadPodcastRecommendations().catch(error=>{req.log.warn({err:error},"podcast recommendations unavailable");return [];}) : [];
+    const body={...data,podcastRecommendations};
+    const { generatedAt: _, ...content } = body;
+    return sendJsonWithEtag(req, reply, body, { etagPrefix: "pool", cacheControl: "public, max-age=60, s-maxage=60", etagOf: content });
   }));
 
   app.get("/api/site/items/:id", siteHandler(async (req, reply) => {
@@ -165,6 +171,12 @@ export function registerSite(app: FastifyInstance) {
   if (PROFILE_KEY === "art" || PROFILE_KEY === "cs2") app.get("/api/site/tracking", siteHandler(async (req, reply) => {
     const type = String((req.query as {type?:string}).type || "all");
     return sendJsonWithEtag(req, reply, await loadTrackingDirectory(type), {etagPrefix:"tracking",cacheControl:"public, max-age=60, s-maxage=60"});
+  }));
+
+  if(PROFILE_KEY==='ai')app.get('/api/site/podcasts',siteHandler(async(req,reply)=>{
+    const q=looseQuery(req);const page=Math.min(100,Math.max(1,Number.parseInt(q.page||'1',10)||1));
+    const data=await loadPodcastDirectory({topic:q.topic,language:q.language,program:q.program,q:q.q,episode:q.episode,page});
+    return sendJsonWithEtag(req,reply,data,{etagPrefix:'podcasts',cacheControl:'public, max-age=60, s-maxage=60'});
   }));
 
   app.get("/api/site/stats", siteHandler(async (req, reply) => {

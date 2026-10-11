@@ -6,7 +6,7 @@ import {DOMAINS,titleFor} from './environment.mjs';
 export async function runInteraction({taskSpace,config}) {
  const statePath=path.join(config.output,'browser-state.json');
  const saved=await readFile(statePath,'utf8').then(JSON.parse).catch(()=>null);
- const task=await taskSpace(saved&&!saved.finished?saved.spaceId:'AI Station 交互回归');
+ const task=await taskSpace(config.spaceId||(saved&&!saved.finished?saved.spaceId:'AI Station 交互回归'));
  await writeFile(statePath,JSON.stringify({spaceId:task.spaceId,finished:false}));
  console.log('交互测试浏览空间：'+task.spaceId);
  const page=task.page('p1'),results=[];
@@ -123,10 +123,31 @@ export async function runInteraction({taskSpace,config}) {
   await goto('/art/all','艺术动态');await page.keyboard.press('/');assert.equal(await page.evaluate(()=>document.activeElement?.getAttribute('name')),'q');await page.fill('loc=css:input[name="q"]','SharedQuery');await page.press('loc=css:input[name="q"]','Enter');await waitHeading('艺术 · 搜索');
  });
  for(const width of [320,390,1280])await test('LAYOUT-'+width,'导航与主页面无横向溢出：'+width,async()=>{
-  await viewport(width);for(const url of ['/art','/beauty','/cs2','/art/exhibitions','/cs2/events','/art/topics/art-topic','/art/items/shared-item']){await goto(url);const view=await observe();assert.ok(view.scrollWidth<=width+1,url+' overflow '+view.scrollWidth);}
+  await viewport(width);for(const url of ['/art','/beauty','/cs2','/art/exhibitions','/cs2/events','/art/topics/art-topic','/art/items/shared-item','/podcasts','/','/all','/daily']){await goto(url);const view=await observe();assert.ok(view.scrollWidth<=width+1,url+' overflow '+view.scrollWidth);}
  });
  await test('ADMIN-anonymous','访客进入后台只到登录页',async()=>{
   await goto('/admin/sources');await page.waitForFunction(()=>location.pathname==='/admin/login');assert.ok((await observe()).text.includes('管理员密码'));
+ });
+ await test('PODCAST-audio','播客可收听、调整倍速、关闭并恢复本机进度',async()=>{
+  await goto('/podcasts','AI 与经济播客');await click('loc=role:button[name="收听：AI播客回归单集"]');
+  await page.waitForFunction(()=>{const node=document.querySelector('audio');return node&&!node.paused&&node.currentTime>0.25;});await page.snapshot();
+  await page.selectOption('loc=css:select[aria-label="播放速度"]','1.5');assert.equal(await page.evaluate(()=>document.querySelector('audio')?.playbackRate),1.5);
+  await click('loc=role:button[name="关闭播放器"]');await page.waitForFunction(()=>!document.querySelector('audio'));
+  const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('ai-station-podcast-progress-v1')||'{}')['podcast-item-a']);assert.ok(saved>0);
+  await page.snapshot();await click('loc=role:button[name="收听：AI播客回归单集"]');await page.waitForFunction(saved=>{const a=document.querySelector('audio');return a&&!a.paused&&a.currentTime>=saved;},saved);await click('loc=role:button[name="关闭播放器"]');
+ });
+ await test('PODCAST-filter','播客方向与语言筛选只显示匹配单集',async()=>{
+  await goto('/podcasts','AI 与经济播客');await page.selectOption('loc=css:select[name="topic"]','economy');await page.selectOption('loc=css:select[name="language"]','zh');await click('loc=role:button[name="查找单集"]');
+  await page.waitForFunction(()=>location.search.includes('economy')&&document.body.innerText.includes('经济播客回归单集')&&!document.body.innerText.includes('AI播客回归单集'));
+ });
+ await test('PODCAST-dynamics','精选与全部动态推荐定位单集，其他频道与搜索不混入',async()=>{
+  for(const path of ['/','/all']){await goto(path);assert.ok((await observe()).text.includes('近期播客推荐'));await click('loc=css:main a:has-text("查看与收听")');await page.waitForFunction(()=>location.search.includes('episode=podcast-item-a'));assert.ok(!(await observe()).text.includes('经济播客回归单集'));assert.equal(await page.evaluate(()=>document.querySelectorAll('audio').length),0);}
+  await goto('/art/all','艺术动态');assert.ok(!(await observe()).text.includes('近期播客推荐'));
+  await goto('/all?q=SharedQuery');assert.ok(!(await observe()).text.includes('近期播客推荐'));
+ });
+ await test('PODCAST-reports','日周月报告均有推荐收听，艺术日报保持本频道',async()=>{
+  for(const path of ['/daily','/weekly','/monthly']){await goto(path);await page.waitForFunction(()=>document.querySelector('#s-podcasts'));assert.ok((await observe()).text.includes('AI播客回归单集'));assert.equal(await page.evaluate(()=>document.querySelectorAll('audio').length),0);}
+  await goto('/art/daily');assert.equal(await page.evaluate(()=>document.querySelectorAll('#s-podcasts').length),0);
  });
  await test('NETWORK-local','交互请求只在隔离测试 API，未派发后端写入',async()=>{
   const requests=await fetch(config.control+'/requests').then(r=>r.json());assert.ok(requests.length>0);assert.ok(requests.every(r=>['GET','HEAD'].includes(r.method)));assert.ok(requests.some(r=>r.path==='/api/site/topics/art-topic'));assert.ok(requests.some(r=>r.path==='/api/site/items/shared-item'));

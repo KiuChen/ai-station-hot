@@ -1,3 +1,5 @@
+import {refreshPodcasts} from '@aihot/backend/sources/podcasts';
+import {PROFILE_KEY} from '@aihot/industry/profile';
 import { checkModelQuotaAlerts } from "@aihot/backend/operations/model-quota";
 import { DAILY_REPORT_HOUR } from "@aihot/industry/reports";
 // Cron-style schedules (Asia/Shanghai). Each run is recorded in job_runs; missed slots run once.
@@ -38,6 +40,7 @@ interface Scheduled {
 const collecting = process.env.COLLECT_ENABLED !== "false";
 
 export const SCHEDULES: Scheduled[] = [
+  ...(collecting&&PROFILE_KEY==='ai'&&process.env.PODCASTS_ENABLED!=='false'?[{name:'podcasts.refresh',cron:'0 */6 * * *',run:refreshPodcasts}]:[]),
   { name: "content.sweep", cron: "*/5 * * * *", run: sweepUnprocessed },
   // Full-text translations of newly selected items (model calls; off with MODEL_CALLS_ENABLED=false).
   { name: "content.translate", cron: "*/5 * * * *", run: () => translatePending() },

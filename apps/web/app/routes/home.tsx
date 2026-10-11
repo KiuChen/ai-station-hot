@@ -1,3 +1,4 @@
+import {PodcastRecommendations} from '../features/podcasts/Recommendations';
 import { scopeMeta } from "../lib/channel-meta";
 import { channelPath, channelForPath } from "@aihot/industry/channels";
 import { SITE, withSubject } from "@aihot/industry/site";
@@ -74,6 +75,7 @@ export default function Home() {
         <SearchIconLink />
       </div>
 
+      <PodcastRecommendations items={data.podcastRecommendations} />
       <Timeline initial={data} filters={data.filters} />
     </div>
   );

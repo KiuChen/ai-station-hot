@@ -4,6 +4,7 @@ import { type RouteConfig, index, layout, route } from "@react-router/dev/routes
 const aiRoutes: Array<ReturnType<typeof route>> = [
   index("routes/home.tsx"),
   route("all", "routes/all.tsx"),
+  route("podcasts", "routes/podcasts.tsx"),
   route("all/search-busy", "routes/search-busy.tsx", { id: "all-search-busy" }),
   route("search-busy", "routes/search-busy.tsx", { id: "search-busy" }),
   route("items/:id", "routes/item.tsx"),
@@ -57,7 +58,7 @@ const aiRoutes: Array<ReturnType<typeof route>> = [
   ]),
 ];
 
-const excluded = /leaderboard|codex-reset/;
+const excluded = /leaderboard|codex-reset|podcasts/;
 function scoped(entry: ReturnType<typeof route>, channel: typeof CHANNELS[number]): ReturnType<typeof route> {
   const copy = { ...entry, id: channel.key + "-" + (entry.id ?? entry.file ?? entry.path ?? "layout").replace(/[^a-zA-Z0-9_-]/g,"-") };
   if (copy.children) copy.children = copy.children.filter(r=>!excluded.test(r.file??"")).map(r=>scoped(r,channel));
