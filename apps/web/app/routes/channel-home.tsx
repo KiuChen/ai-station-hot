@@ -41,6 +41,7 @@ export default function ChannelHome() {
     <p className="mt-2 text-[12px] leading-5 text-ink-4">{channel.key==='cs2'?'展示赛事阶段与资讯，实时比分以官方赛事中心为准。':'开放、预约与临时闭馆安排请在出发前核对馆方官网。'}</p>
    </>:<div className="card p-5"><p className="mb-3 text-[13px] text-ink-3">从已有主题进入护肤、时尚与品牌阅读。</p><div className="flex flex-wrap gap-2">{shortcuts.map(t=><Link key={t.slug} to={'/topics/'+t.slug} className="inline-flex min-h-11 items-center rounded-full border border-line px-4 text-[13px] text-ink-2">{t.name}<span className="ml-2 text-ink-4">{t.total}</span></Link>)}{!shortcuts.length&&<Link to="/topics" className="text-[13px] text-accent">浏览主题索引 →</Link>}</div></div>}
   </section>
+  {channel.key==='art'&&<div className="mb-6 rounded-control border border-line bg-surface px-4 py-3 text-[13px] leading-6 text-ink-3">查找北京的艺术场馆与高校展馆：<Link to="/exhibitions/venues" className="inline-flex min-h-9 items-center text-accent">浏览北京场馆目录 →</Link></div>}
   <section aria-labelledby="channel-reading"><div className="mb-2 flex items-center justify-between gap-3"><h2 id="channel-reading" className="text-[17px] font-semibold text-ink">近期动态</h2><Link to="/all" className="inline-flex min-h-11 items-center text-[13px] text-accent">浏览全部 →</Link></div>{feed.items.length?<DayList items={feed.items.slice(0,6)} showTags />:<div className="card p-5 text-[13px] leading-6 text-ink-3">当前暂无已整理的资讯，完成摘要后将在这里显示。</div>}</section>
  </div>;
 }

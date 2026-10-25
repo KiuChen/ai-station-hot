@@ -1,3 +1,4 @@
+import {ExhibitionNavigation} from '../features/tracking/ExhibitionNavigation';
 import {useLoaderData} from 'react-router';
 import type {TrackingDirectory} from '@aihot/contracts/site';
 import {apiGet} from '../lib/api.server';
@@ -31,6 +32,7 @@ export default function TrackingPage() {
  return <div className="pb-10 pt-2 lg:pt-0">
   <h1 className="text-[24px] font-semibold text-ink">{label}</h1>
   <p className="mt-2 text-[13px] leading-6 text-ink-3">{tournament?'仅展示已核实且仍在赛期内的顶级赛事。当前阶段优先呈现，不提供即时比分。':'按城市、馆方与展览类型查找。日期不明和场馆目录单独标识，开放安排请核对官网。'}</p>
+  {!tournament&&<ExhibitionNavigation />}
   <details className="mt-4 rounded-control border border-line bg-surface px-4 py-2 text-[12px] text-ink-3"><summary className="min-h-7">信源状态与核验说明</summary><ul className="mt-2 space-y-2 pb-2">{data.sources.map(s=><li key={s.id}>{s.name} · {s.health==='ok'?'最近采集正常':'等待更新'} · 最后成功更新：{s.checkedAt?new Date(s.checkedAt).toLocaleString('zh-CN',{timeZone:'Asia/Shanghai',hour12:false}):'尚无记录'}</li>)}</ul><p className="pb-2 leading-5">目录可保留上次采集结果；卡片上的核验时间与最近采集状态分别显示。{tournament?'即时比分、赛果和赛程调整以官方赛事中心为准。':'在展不等于今日开馆；票价、预约和临时闭馆请在出发前确认。'}</p></details>
   {!tournament&&<Form method="get" action="/exhibitions" className="my-5 grid grid-cols-2 items-end gap-3 sm:grid-cols-4">
    <label className="min-w-0 text-[12px] text-ink-3">城市<select name="city" defaultValue={filters.city} key={'city'+filters.city} className={'mt-1 '+control}><option value="">全部城市</option>{cities.map(c=><option key={c}>{c}</option>)}</select></label>

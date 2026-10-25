@@ -404,3 +404,16 @@ export interface PodcastSnapshot {version:1;updatedAt:string|null;programs:Recor
 export interface PodcastDirectory {programs:Array<PodcastProgram & {coverUrl:string|null;checkedAt:string|null;health:string}>;episodes:PodcastEpisode[];total:number;page:number;pageCount:number;updatedAt:string|null}
 
 export interface PodcastRecommendation {episode:PodcastEpisode;program:PodcastProgram;reason:string;topics:Array<'ai'|'economy'>;basis:'metadata';selectedAt:string}
+
+
+/** An institution directory records places to research; it never asserts an exhibition is current. */
+export interface ExhibitionVenue {
+ id:string;name:string;aliases:string[];city:string;district:string;address:string;
+ kind:'museum'|'art-museum'|'art-space'|'university';university:string|null;subjects:string[];
+ websiteUrl:string|null;exhibitionsUrl:string|null;referenceUrl:string;referenceLabel:string;
+ accessNote:string;verifiedAt:string;verification:'institution'|'directory';notes:string;
+ trackingOrganizations:string[];
+}
+export interface ExhibitionVenueDirectory {
+ updatedAt:string;coverage:{summary:string;sources:Array<{title:string;url:string;records:number|null}>};venues:ExhibitionVenue[];
+}

@@ -1,0 +1,942 @@
+{
+  "reviewedAt": "2026-10-25",
+  "baseline": "https://www.moe.gov.cn/jyb_xxgk/s5743/s5744/202606/t20260618_1441074.html",
+  "schools": [
+    {
+      "name": "北京大学",
+      "venues": [
+        "北京大学赛克勒考古与艺术博物馆",
+        "北京大学地质博物馆",
+        "北京大学校史馆",
+        "北京大学生物标本馆",
+        "北京大学人体解剖学博物馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://wwj.beijing.gov.cn/bjww/362771/362772/545832/index.html",
+        "https://s.visitbeijing.com.cn/attraction/119050",
+        "https://www.visitbeijing.com.cn/article/4PSWVhBToNg",
+        "https://m.bjnews.com.cn/detail/1752212871129902.html",
+        "https://www.visitbeijing.com.cn/article/4PSWVhBToNg"
+      ]
+    },
+    {
+      "name": "中国人民大学",
+      "venues": [
+        "中国人民大学博物馆",
+        "中国人民大学家书博物馆",
+        "中国人民大学美术馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://www.beijing.gov.cn/ywdt/gzdt/202609/t20260930_4887474.html",
+        "https://wwj.beijing.gov.cn/bjww/362771/362772/546210/index.html",
+        "https://wwj.beijing.gov.cn/bjww/362771/362772/546129/index.html"
+      ]
+    },
+    {
+      "name": "清华大学",
+      "venues": [
+        "清华大学艺术博物馆",
+        "清华大学科学博物馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://wwj.beijing.gov.cn/bjww/362771/362772/743628017/index.html",
+        "https://wwj.beijing.gov.cn/bjww/362771/362772/546207/index.html"
+      ]
+    },
+    {
+      "name": "北京交通大学",
+      "venues": [
+        "北京交通大学交通运输科学馆 （运输设备教学馆）",
+        "北京交通大学大学生机械博物馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://m.bjnews.com.cn/detail/1752212871129902.html",
+        "https://www.visitbeijing.com.cn/article/4PSWVhBToNg"
+      ]
+    },
+    {
+      "name": "北京工业大学",
+      "venues": [
+        "北京工业大学微特电机科技博物馆",
+        "北京工业大学视觉艺术馆",
+        "北京工业大学民间美术博物馆",
+        "北京工业大学校史馆",
+        "北京工业大学双奥馆",
+        "北京工业大学党建馆",
+        "北京工业大学科技馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://m.bjnews.com.cn/detail/1752212871129902.html",
+        "https://www.bjut.edu.cn/bwg/mjmsbwg.htm",
+        "https://www.bjut.edu.cn/bwg/index.htm",
+        "https://www.bjut.edu.cn/bwg/index.htm",
+        "https://www.bjut.edu.cn/bwg/sjysg.htm",
+        "https://www.bjut.edu.cn/bwg/xsg/zgjj/xsg.htm",
+        "https://www.bjut.edu.cn/bwg/index.htm"
+      ]
+    },
+    {
+      "name": "北京航空航天大学",
+      "venues": [
+        "北京航空航天大学航空航天博物馆",
+        "北京航空航天大学校史馆",
+        "北京航空航天大学安全教育体验馆",
+        "北京航空航天大学艺术馆（学院路校区）",
+        "北京航空航天大学艺术馆（沙河校区）"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://www.visitbeijing.com.cn/article/4PSWVhBToNg",
+        "https://wwj.beijing.gov.cn/bjww/362771/362772/545850/index.html",
+        "https://news.buaa.edu.cn/info/1002/68083.htm",
+        "https://xcb.buaa.edu.cn/info/1021/3505.htm",
+        "https://m.bjnews.com.cn/detail/1752212871129902.html"
+      ]
+    },
+    {
+      "name": "北京理工大学",
+      "venues": [
+        "北京理工大学国防文化教育基地",
+        "北京理工大学校史馆",
+        "北京理工大学延河文化艺术馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://m.bjnews.com.cn/detail/1752212871129902.html",
+        "https://m.bjnews.com.cn/detail/1752212871129902.html",
+        "https://www.bit.edu.cn/xww/zhxw/dxwh/3ba48452cc4043e2b92201d627c5158a.htm"
+      ]
+    },
+    {
+      "name": "北京科技大学",
+      "venues": [
+        "北京科技大学矿石展厅"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://kw.beijing.gov.cn/xwdt/kcyx/xwdtshgg/202405/t20240523_3817238.html"
+      ]
+    },
+    {
+      "name": "北方工业大学",
+      "venues": [
+        "北方工业大学艺术馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://bm.cugb.edu.cn/bwg/c/2025-03-27/822614.shtml"
+      ]
+    },
+    {
+      "name": "北京化工大学",
+      "venues": [
+        "北京化工大学校史馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://www.buct.edu.cn/2026/0427/c1599a218933/page.htm"
+      ]
+    },
+    {
+      "name": "北京工商大学",
+      "venues": [
+        "北京工商大学校史馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://dag.btbu.edu.cn/gzdt/5b00515db1fd42488e7e0297f0d98e71.htm"
+      ]
+    },
+    {
+      "name": "北京服装学院",
+      "venues": [
+        "北京服装学院民族服饰博物馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://wwj.beijing.gov.cn/bjww/362771/362772/546021/index.html"
+      ]
+    },
+    {
+      "name": "北京邮电大学",
+      "venues": [
+        "北京邮电大学校史馆",
+        "北京邮电大学科技展厅"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://jwbs.bupt.edu.cn/info/1054/1444.htm",
+        "https://jwbs.bupt.edu.cn/info/1054/1444.htm"
+      ]
+    },
+    {
+      "name": "北京印刷学院",
+      "venues": [
+        "中国印刷博物馆",
+        "北京印刷学院美术馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://www.bigc.edu.cn/byxs19/26348a506e7744b6af48ea11ecce9662.htm",
+        "https://wwj.beijing.gov.cn/bjww/362771/362772/545886/index.html"
+      ]
+    },
+    {
+      "name": "北京建筑大学",
+      "venues": [
+        "北京建筑大学建筑馆",
+        "北京建筑大学校史馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://kw.beijing.gov.cn/xwdt/kcyx/xwdtshgg/202405/t20240523_3817238.html",
+        "https://sci.bucea.edu.cn/xsgz/xshd/7aa89cb72f2540718c0e672f40b89083.htm"
+      ]
+    },
+    {
+      "name": "北京石油化工学院",
+      "venues": [
+        "北京石油化工学院校史馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://www.bipt.edu.cn/pub/aqgcxy/gzdt/240464.htm"
+      ]
+    },
+    {
+      "name": "北京电子科技学院",
+      "venues": [],
+      "status": "searched-no-confirmed-venue",
+      "evidence": [],
+      "note": "已检索公开资料，尚未确认北京实体展陈空间；不作不存在判断。"
+    },
+    {
+      "name": "中国农业大学",
+      "venues": [
+        "中国农业大学昆虫博物馆",
+        "中国农业大学饲料博物馆",
+        "中国农业大学动物医学标本馆",
+        "中国农业大学校史馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://www.visitbeijing.com.cn/article/4PSWVhBToNg",
+        "https://archives.cau.edu.cn/art/2025/11/24/art_44553_1091098.html",
+        "https://www.visitbeijing.com.cn/article/4PSWVhBToNg",
+        "https://www.visitbeijing.com.cn/article/4PSWVhBToNg"
+      ]
+    },
+    {
+      "name": "北京农学院",
+      "venues": [
+        "北京农学院校史馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://www.bua.edu.cn/info/1050/28286.htm"
+      ]
+    },
+    {
+      "name": "北京林业大学",
+      "venues": [
+        "北京林业大学博物馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://www.visitbeijing.com.cn/article/4PSWVhBToNg"
+      ]
+    },
+    {
+      "name": "北京协和医学院",
+      "venues": [
+        "北京协和医学院校史馆",
+        "北京协和医院院史馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://www.pumc.edu.cn/yxbd/14d447421c994b19917fa79279f373ca.htm",
+        "https://www.pumc.edu.cn/yxbd/14d447421c994b19917fa79279f373ca.htm"
+      ]
+    },
+    {
+      "name": "首都医科大学",
+      "venues": [
+        "首都医科大学中医药标本馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://m.bjnews.com.cn/detail/1752212871129902.html"
+      ]
+    },
+    {
+      "name": "北京中医药大学",
+      "venues": [
+        "北京中医药大学中医药博物馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://wwj.beijing.gov.cn/bjww/362771/362772/545973/index.html"
+      ]
+    },
+    {
+      "name": "北京师范大学",
+      "venues": [
+        "北京师范大学启功书院坚净美术馆",
+        "北京师范大学京师美术馆",
+        "北京师范大学形象陈列馆",
+        "北京师范大学地质标本馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://dag.bnu.edu.cn/jggk/index.htm",
+        "https://wxy.bnu.edu.cn/syxwdt/cca346dfd66940c58d8d4a9c10f88992.htm",
+        "https://syzx.bnu.edu.cn/sygc/jsmsg/index.htm",
+        "https://www.beijing.gov.cn/fuwu/bmfw/sy/jrts/202602/t20260226_4541460.html"
+      ]
+    },
+    {
+      "name": "首都师范大学",
+      "venues": [
+        "首都师范大学校史馆",
+        "首都师范大学历史博物馆",
+        "首都师范大学书法文化博物馆",
+        "首都师范大学美术馆",
+        "首都师范大学动物标本馆",
+        "首都师范大学地质博物馆",
+        "首都师范大学教科书博物馆",
+        "首都师范大学昆虫化石标本馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://m.bjnews.com.cn/detail/1752212871129902.html",
+        "https://m.bjnews.com.cn/detail/1752212871129902.html",
+        "https://www.visitbeijing.com.cn/article/4PSWVhBToNg",
+        "https://www.visitbeijing.com.cn/article/4PSWVhBToNg",
+        "https://www.visitbeijing.com.cn/article/4PSWVhBToNg",
+        "https://www.visitbeijing.com.cn/article/4PSWVhBToNg",
+        "https://m.bjnews.com.cn/detail/1752212871129902.html",
+        "https://www.visitbeijing.com.cn/article/4PSWVhBToNg"
+      ]
+    },
+    {
+      "name": "首都体育学院",
+      "venues": [
+        "首都体育学院奥林匹克教育博物馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://m.bjnews.com.cn/detail/1752212871129902.html"
+      ]
+    },
+    {
+      "name": "北京外国语大学",
+      "venues": [
+        "北京外国语大学世界语言博物馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://wwj.beijing.gov.cn/bjww/362771/362772/743627956/index.html"
+      ]
+    },
+    {
+      "name": "北京第二外国语学院",
+      "venues": [
+        "北京第二外国语学院校史馆",
+        "北京第二外国语学院BISU中国漫画馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://bkzs.bisu.edu.cn/mixmedia/a/202606/29/WS6a4238f4cf1efc5625c73f9e.html",
+        "https://bkzs.bisu.edu.cn/mixmedia/a/202606/29/WS6a4238f4cf1efc5625c73f9e.html"
+      ]
+    },
+    {
+      "name": "北京语言大学",
+      "venues": [
+        "北京语言大学校史馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://news.blcu.edu.cn/info/1022/41238.htm"
+      ]
+    },
+    {
+      "name": "中国传媒大学",
+      "venues": [
+        "中国传媒大学传媒博物馆",
+        "中国传媒大学中国广告博物馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://s.visitbeijing.com.cn/attraction/119953",
+        "https://wwj.beijing.gov.cn/bjww/362771/362772/546174/index.html"
+      ]
+    },
+    {
+      "name": "中央财经大学",
+      "venues": [
+        "中央财经大学校史馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://www.cufe.edu.cn/info/1186/23193.htm"
+      ]
+    },
+    {
+      "name": "对外经济贸易大学",
+      "venues": [
+        "对外经贸博物馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://wwj.beijing.gov.cn/bjww/362771/362772/743627936/index.html"
+      ]
+    },
+    {
+      "name": "北京物资学院",
+      "venues": [
+        "北京物资学院物流博物馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://www.visitbeijing.com.cn/article/4PSWVhBToNg"
+      ]
+    },
+    {
+      "name": "首都经济贸易大学",
+      "venues": [
+        "首都经济贸易大学延安九日与作风传承纪念展",
+        "首都经济贸易大学校史馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://bm.cugb.edu.cn/bwg/c/2025-03-27/822614.shtml",
+        "https://m.bjnews.com.cn/detail/1752212871129902.html"
+      ]
+    },
+    {
+      "name": "中国消防救援学院",
+      "venues": [
+        "中国消防救援学院院史馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://zs.cfri.edu.cn/content/mem/life/c1.htm"
+      ]
+    },
+    {
+      "name": "外交学院",
+      "venues": [
+        "外交学院校史馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://deis.cfau.edu.cn/col384/751f7603b8b14c1690f1bf069189f052.htm"
+      ]
+    },
+    {
+      "name": "中国人民公安大学",
+      "venues": [
+        "中国人民公安大学校史馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://www.ppsuc.edu.cn/info/1016/16446.htm"
+      ]
+    },
+    {
+      "name": "国际关系学院",
+      "venues": [],
+      "status": "searched-no-confirmed-venue",
+      "evidence": [],
+      "note": "已检索公开资料，尚未确认北京实体展陈空间；不作不存在判断。"
+    },
+    {
+      "name": "北京体育大学",
+      "venues": [
+        "北京体育大学校史馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://www.bsu.edu.cn/xyyw/f0efb7ba4f504bd284506ff0a2ef44c9.htm"
+      ]
+    },
+    {
+      "name": "中央音乐学院",
+      "venues": [],
+      "status": "searched-no-confirmed-venue",
+      "evidence": [],
+      "note": "校史馆机构页及2020筹建公告不足以确认新实体展馆已开放，待补建成或参观证据。"
+    },
+    {
+      "name": "中国音乐学院",
+      "venues": [],
+      "status": "searched-no-confirmed-venue",
+      "evidence": [],
+      "note": "已检索公开资料，尚未确认北京实体展陈空间；不作不存在判断。"
+    },
+    {
+      "name": "中央美术学院",
+      "venues": [
+        "中央美术学院美术馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://wwj.beijing.gov.cn/bjww/362771/362772/545853/index.html"
+      ]
+    },
+    {
+      "name": "中央戏剧学院",
+      "venues": [
+        "中央戏剧学院“党史第一课——艺术教育的革命之路”主题展"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://kw.beijing.gov.cn/xwdt/kcyx/xwdtshgg/202405/t20240523_3817238.html"
+      ]
+    },
+    {
+      "name": "中国戏曲学院",
+      "venues": [
+        "中国戏曲学院专家赠书陈列室"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://lib.nacta.edu.cn/fw/dzzn/index.htm"
+      ],
+      "note": "纯数字戏曲教育博物馆不计实体场馆；专家赠书陈列室有独立实体证据。"
+    },
+    {
+      "name": "北京电影学院",
+      "venues": [
+        "北京电影学院校史馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://hdzx.bjhd.gov.cn/2019/zxyx/zxhd/zxyw/202602/t20260206_4804992.shtml"
+      ]
+    },
+    {
+      "name": "北京舞蹈学院",
+      "venues": [
+        "北京舞蹈学院舞蹈博物馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://wwj.beijing.gov.cn/bjww/362771/362772/743627946/index.html"
+      ]
+    },
+    {
+      "name": "中央民族大学",
+      "venues": [
+        "中央民族大学民族博物馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://wwj.beijing.gov.cn/bjww/362771/362772/545847/index.html"
+      ]
+    },
+    {
+      "name": "中国政法大学",
+      "venues": [
+        "中国政法大学博物馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://bm.cugb.edu.cn/bwg/c/2025-03-27/822614.shtml"
+      ]
+    },
+    {
+      "name": "华北电力大学",
+      "venues": [
+        "华北电力大学校史馆（北京校部）"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://gh.ncepu.edu.cn/xwtz/fghxw/10f275b98597417bb307d010caedbf47.htm"
+      ]
+    },
+    {
+      "name": "中华女子学院",
+      "venues": [
+        "中华女子学院校史馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://www.cwu.edu.cn/xywh1/xsg.htm"
+      ]
+    },
+    {
+      "name": "北京信息科技大学",
+      "venues": [
+        "北京信息科技大学校史馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://www.bistu.edu.cn/xysx/c9d99a0178a548fb9dd4d98823451bda.html"
+      ]
+    },
+    {
+      "name": "中国矿业大学（北京）",
+      "venues": [
+        "中国矿业大学（北京）校史馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://rs.cumtb.edu.cn/info/1012/3146.htm"
+      ]
+    },
+    {
+      "name": "中国石油大学（北京）",
+      "venues": [
+        "中国石油大学（北京）石油之光科技馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://m.bjnews.com.cn/detail/1752212871129902.html"
+      ]
+    },
+    {
+      "name": "中国地质大学（北京）",
+      "venues": [
+        "中国地质大学（北京）博物馆",
+        "中国地质大学（北京）校史馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://kw.beijing.gov.cn/xwdt/kcyx/xwdtshgg/202405/t20240523_3817238.html",
+        "https://s.visitbeijing.com.cn/attraction/119074"
+      ]
+    },
+    {
+      "name": "北京联合大学",
+      "venues": [
+        "北京联合大学文博馆",
+        "北京联合大学三山五园数字体验馆",
+        "北京联合大学手工艺博物馆",
+        "北京联合大学校史馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://m.bjnews.com.cn/detail/1752212871129902.html",
+        "https://adc.buu.edu.cn/",
+        "https://bm.cugb.edu.cn/bwg/c/2025-03-27/822614.shtml",
+        "https://m.bjnews.com.cn/detail/1752212871129902.html"
+      ]
+    },
+    {
+      "name": "北京城市学院",
+      "venues": [
+        "北京城市学院校史馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://www4.bcu.edu.cn/info/1162/20371.htm"
+      ]
+    },
+    {
+      "name": "中国青年政治学院",
+      "venues": [
+        "中央团校（中国青年政治学院）校史展览馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://www.zytx.org.cn/xwzx/xwzt/ggkfssnzt/200812/t20081219_100309.html"
+      ]
+    },
+    {
+      "name": "首钢工学院",
+      "venues": [],
+      "status": "searched-no-confirmed-venue",
+      "evidence": [],
+      "note": "已检索公开资料，尚未确认北京实体展陈空间；不作不存在判断。"
+    },
+    {
+      "name": "中国劳动关系学院",
+      "venues": [
+        "中国劳动关系学院校史馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://news.culr.edu.cn/xszl/zphz/index.htm"
+      ]
+    },
+    {
+      "name": "首都师范大学科德学院",
+      "venues": [
+        "首都师范大学科德学院校史馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://yyxy.kdcnu.com/xydt/webinfo/2024/05/1713248675778103.htm"
+      ]
+    },
+    {
+      "name": "北京金融科技学院",
+      "venues": [],
+      "status": "searched-no-confirmed-venue",
+      "evidence": [],
+      "note": "已检索公开资料，尚未确认北京实体展陈空间；不作不存在判断。"
+    },
+    {
+      "name": "北京邮电大学世纪学院",
+      "venues": [
+        "北京邮电大学世纪学院校史馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://www.ccbupt.com.cn/sjyw/92de505f58c64230b33967e013562ef9.htm"
+      ]
+    },
+    {
+      "name": "北京工业大学耿丹学院",
+      "venues": [
+        "北京工业大学耿丹学院校史馆",
+        "耿丹红色资料馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://www.bjwlxy.org.cn/index/news/article/id/691.html",
+        "https://www.bjwmb.gov.cn/sjjd/10043595.html"
+      ]
+    },
+    {
+      "name": "北京警察学院",
+      "venues": [],
+      "status": "searched-no-confirmed-venue",
+      "evidence": [],
+      "note": "已检索公开资料，尚未确认北京实体展陈空间；不作不存在判断。"
+    },
+    {
+      "name": "北京第二外国语学院中瑞酒店管理学院",
+      "venues": [],
+      "status": "searched-no-confirmed-venue",
+      "evidence": [],
+      "note": "已检索公开资料，尚未确认北京实体展陈空间；不作不存在判断。"
+    },
+    {
+      "name": "中国科学院大学",
+      "venues": [
+        "中国科学院与“两弹一星”纪念馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://kw.beijing.gov.cn/xwdt/kcyx/xwdtshgg/202405/t20240523_3817238.html"
+      ]
+    },
+    {
+      "name": "中国社会科学院大学",
+      "venues": [
+        "中国社会科学院大学校史馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://bs.ucass.edu.cn/info/1213/4206.htm"
+      ]
+    },
+    {
+      "name": "民政职业大学",
+      "venues": [],
+      "status": "searched-no-confirmed-venue",
+      "evidence": [],
+      "note": "已检索公开资料，尚未确认北京实体展陈空间；不作不存在判断。"
+    },
+    {
+      "name": "北京科技职业大学",
+      "venues": [
+        "北京科技职业大学校史馆",
+        "北京科技职业大学工匠馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://m.bjnews.com.cn/detail/1752212871129902.html",
+        "https://m.bjnews.com.cn/detail/1752212871129902.html"
+      ]
+    },
+    {
+      "name": "北京工业职业技术学院",
+      "venues": [
+        "北京工业职业技术学院校史馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://manager.zjkptc.edu.cn/html/924/2026-03-18/content-14436.html"
+      ]
+    },
+    {
+      "name": "北京信息职业技术学院",
+      "venues": [],
+      "status": "searched-no-confirmed-venue",
+      "evidence": [],
+      "note": "已检索公开资料，尚未确认北京实体展陈空间；不作不存在判断。"
+    },
+    {
+      "name": "北京京北职业技术学院",
+      "venues": [],
+      "status": "searched-no-confirmed-venue",
+      "evidence": [],
+      "note": "已检索公开资料，尚未确认北京实体展陈空间；不作不存在判断。"
+    },
+    {
+      "name": "北京交通职业技术学院",
+      "venues": [],
+      "status": "searched-no-confirmed-venue",
+      "evidence": [],
+      "note": "已检索公开资料，尚未确认北京实体展陈空间；不作不存在判断。"
+    },
+    {
+      "name": "北京青年政治学院",
+      "venues": [
+        "北京青年政治学院校史馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://www.bjypc.edu.cn/xww/bqyw/1e8e712e6983433d8b9a53987e873844.htm"
+      ]
+    },
+    {
+      "name": "北京农业职业学院",
+      "venues": [
+        "北京农业职业学院校史馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://www.bvca.edu.cn/info/1061/14611.htm"
+      ]
+    },
+    {
+      "name": "北京政法职业学院",
+      "venues": [
+        "北京政法职业学院校史馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://www.bcpl.edu.cn/ywsl/xyxw/bd5c98f3ec2147eb869f52ba4802d1e6.htm"
+      ]
+    },
+    {
+      "name": "北京财贸职业学院",
+      "venues": [],
+      "status": "searched-no-confirmed-venue",
+      "evidence": [],
+      "note": "已检索公开资料，尚未确认北京实体展陈空间；不作不存在判断。"
+    },
+    {
+      "name": "北京北大方正软件职业技术学院",
+      "venues": [],
+      "status": "searched-no-confirmed-venue",
+      "evidence": [],
+      "note": "已检索公开资料，尚未确认北京实体展陈空间；不作不存在判断。"
+    },
+    {
+      "name": "北京经贸职业学院",
+      "venues": [],
+      "status": "searched-no-confirmed-venue",
+      "evidence": [],
+      "note": "已检索公开资料，尚未确认北京实体展陈空间；不作不存在判断。"
+    },
+    {
+      "name": "北京经济技术职业学院",
+      "venues": [],
+      "status": "searched-no-confirmed-venue",
+      "evidence": [],
+      "note": "已检索公开资料，尚未确认北京实体展陈空间；不作不存在判断。"
+    },
+    {
+      "name": "北京戏曲艺术职业学院",
+      "venues": [],
+      "status": "searched-no-confirmed-venue",
+      "evidence": [],
+      "note": "已检索公开资料，尚未确认北京实体展陈空间；不作不存在判断。"
+    },
+    {
+      "name": "北京汇佳职业学院",
+      "venues": [],
+      "status": "searched-no-confirmed-venue",
+      "evidence": [],
+      "note": "已检索公开资料，尚未确认北京实体展陈空间；不作不存在判断。"
+    },
+    {
+      "name": "北京科技经营管理学院",
+      "venues": [],
+      "status": "searched-no-confirmed-venue",
+      "evidence": [],
+      "note": "已检索公开资料，尚未确认北京实体展陈空间；不作不存在判断。"
+    },
+    {
+      "name": "北京科技职业学院",
+      "venues": [],
+      "status": "searched-no-confirmed-venue",
+      "evidence": [],
+      "note": "已检索公开资料，尚未确认北京实体展陈空间；不作不存在判断。"
+    },
+    {
+      "name": "北京培黎职业学院",
+      "venues": [],
+      "status": "searched-no-confirmed-venue",
+      "evidence": [],
+      "note": "已检索公开资料，尚未确认北京实体展陈空间；不作不存在判断。"
+    },
+    {
+      "name": "北京经济管理职业学院",
+      "venues": [],
+      "status": "searched-no-confirmed-venue",
+      "evidence": [],
+      "note": "已检索公开资料，尚未确认北京实体展陈空间；不作不存在判断。"
+    },
+    {
+      "name": "北京劳动保障职业学院",
+      "venues": [],
+      "status": "searched-no-confirmed-venue",
+      "evidence": [],
+      "note": "已检索公开资料，尚未确认北京实体展陈空间；不作不存在判断。"
+    },
+    {
+      "name": "北京艺术传媒职业学院",
+      "venues": [],
+      "status": "searched-no-confirmed-venue",
+      "evidence": [],
+      "note": "已检索公开资料，尚未确认北京实体展陈空间；不作不存在判断。"
+    },
+    {
+      "name": "北京体育职业学院",
+      "venues": [],
+      "status": "searched-no-confirmed-venue",
+      "evidence": [],
+      "note": "已检索公开资料，尚未确认北京实体展陈空间；不作不存在判断。"
+    },
+    {
+      "name": "北京交通运输职业学院",
+      "venues": [],
+      "status": "searched-no-confirmed-venue",
+      "evidence": [],
+      "note": "已检索公开资料，尚未确认北京实体展陈空间；不作不存在判断。"
+    },
+    {
+      "name": "北京卫生职业学院",
+      "venues": [
+        "北京卫生职业学院校史馆",
+        "北京卫生职业学院中医药博物馆",
+        "北京卫生职业学院生命科学馆"
+      ],
+      "status": "included",
+      "evidence": [
+        "https://www.bjhvc.edu.cn/info/1047/2204.htm",
+        "https://www.bjhvc.edu.cn/info/1047/2204.htm",
+        "https://www.bjhvc.edu.cn/info/1047/2204.htm"
+      ]
+    },
+    {
+      "name": "北京网络职业学院",
+      "venues": [],
+      "status": "searched-no-confirmed-venue",
+      "evidence": [],
+      "note": "已检索公开资料，尚未确认北京实体展陈空间；不作不存在判断。"
+    }
+  ]
+}

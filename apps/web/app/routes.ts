@@ -65,7 +65,7 @@ function scoped(entry: ReturnType<typeof route>, channel: typeof CHANNELS[number
   if (copy.index) { copy.file = "routes/channel-home.tsx"; copy.id = channel.key + "-home"; }
   return copy;
 }
-export default [route("cs2/events", "routes/tracking.tsx", {id:"cs2-tracking"}), route("art/exhibitions", "routes/tracking.tsx", {id:"art-tracking"}), ...aiRoutes, ...CHANNELS.filter(c=>c.prefix).flatMap(channel=>aiRoutes.filter(r=>!excluded.test(r.file??"")).map(r=>{
+export default [route("art/exhibitions/venues", "routes/exhibition-venues.tsx", {id:"art-exhibition-venues"}), route("cs2/events", "routes/tracking.tsx", {id:"cs2-tracking"}), route("art/exhibitions", "routes/tracking.tsx", {id:"art-tracking"}), ...aiRoutes, ...CHANNELS.filter(c=>c.prefix).flatMap(channel=>aiRoutes.filter(r=>!excluded.test(r.file??"")).map(r=>{
  const copy=scoped(r,channel);
  if (copy.index) { delete copy.index; copy.path=channel.prefix.slice(1); }
  else if(copy.path) copy.path=channel.prefix.slice(1)+"/"+copy.path;

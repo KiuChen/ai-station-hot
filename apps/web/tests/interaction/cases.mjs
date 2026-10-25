@@ -140,7 +140,17 @@ export async function runInteraction({taskSpace,config}) {
   await goto('/art/all','艺术动态');await page.keyboard.press('/');assert.equal(await page.evaluate(()=>document.activeElement?.getAttribute('name')),'q');await page.fill('loc=css:input[name="q"]','SharedQuery');await page.press('loc=css:input[name="q"]','Enter');await waitHeading('艺术 · 搜索');
  });
  for(const width of [320,390,1280])await test('LAYOUT-'+width,'导航与主页面无横向溢出：'+width,async()=>{
-  await viewport(width);for(const url of ['/art','/beauty','/cs2','/art/exhibitions','/cs2/events','/art/topics/art-topic','/art/items/shared-item','/podcasts','/','/all','/daily']){await goto(url);const view=await observe();assert.ok(view.scrollWidth<=width+1,url+' overflow '+view.scrollWidth);}
+  await viewport(width);for(const url of ['/art','/beauty','/cs2','/art/exhibitions','/art/exhibitions/venues','/cs2/events','/art/topics/art-topic','/art/items/shared-item','/podcasts','/','/all','/daily']){await goto(url);const view=await observe();assert.ok(view.scrollWidth<=width+1,url+' overflow '+view.scrollWidth);}
+ });
+ for(const width of [390,1280])await test('VENUES-'+width,'北京目录可检索高校、清除、分页并返回动态：'+width,async()=>{
+  await viewport(width);await goto('/art/exhibitions','国内看展');await click('loc=css:main a[href="/art/exhibitions/venues"]');
+  await page.waitForFunction(()=>document.querySelector('select[name="university"]'));
+  await page.snapshot();await page.selectOption('loc=css:main select[name="university"]','北京第二外国语学院');await click('loc=role:button[name="查找场馆"]');
+  await page.waitForFunction(()=>document.querySelectorAll('main article').length===2);assert.ok((await observe()).text.includes('中国漫画馆'));
+  await page.snapshot();await click('loc=css:main a:has-text("清除筛选")');await page.waitForFunction(()=>document.querySelectorAll('main article').length===12);
+  await page.snapshot();await click('loc=css:nav[aria-label="分页"] a:has-text("下一页")');await page.waitForFunction(()=>new URL(location.href).searchParams.get('page')==='2');assert.equal(await page.evaluate(()=>document.querySelectorAll('main article').length),12);
+  await page.snapshot();await page.fill('loc=css:main input[name="q"]','NoSuchVenue123');await click('loc=role:button[name="查找场馆"]');await page.waitForFunction(()=>document.querySelector('main [role="status"]')?.innerText.includes('没有匹配'));
+  await page.snapshot();await click('loc=css:main a[href="/art/exhibitions"]');await page.waitForFunction(()=>document.body.innerText.includes('上海常设展'));
  });
  await test('ADMIN-anonymous','访客进入后台只到登录页',async()=>{
   await goto('/admin/sources');await page.waitForFunction(()=>location.pathname==='/admin/login');assert.ok((await observe()).text.includes('管理员密码'));

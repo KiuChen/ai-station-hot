@@ -7,6 +7,7 @@ export const DOMAINS={ai:{prefix:'',label:'AI',category:'ai-models',tag:'模型�
 export const titleFor=key=>`${DOMAINS[key].label}专属回归资讯 · SharedQuery`;
 export async function startEnvironment(root) {
  const now=new Date().toISOString(),day=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Shanghai',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(now)),previousDay=new Date(Date.parse(day+'T00:00:00Z')-86400000).toISOString().slice(0,10),servers=[],requests=[],state={failure:null,slowArt:false,emptyEvents:false};
+ const venueDirectory=JSON.parse(await readFile(path.join(root,'industry/profiles/art/exhibition-venues.json'),'utf8'));
  const baseItem=key=>({id:'shared-item',revision:1,title:titleFor(key),originalTitle:null,summary:`${DOMAINS[key].label}频道固定摘要。`,reason:null,source:{id:key+'-source',name:key+' 测试信源',kind:'rss',firstParty:true,iconUrl:null},links:{aihot:DOMAINS[key].prefix+'/items/shared-item',original:'https://source.example/'+key},publishedAt:now,discoveredAt:now,timelineAt:now,category:DOMAINS[key].category,tags:[DOMAINS[key].tag],score:80,selected:key==='ai',channel:'news',story:null,x:null});
  const feedItem=key=>{const item=baseItem(key);return {...item,source:{name:item.source.name}};};
  const topics=key=>[{slug:key+'-topic',name:DOMAINS[key].tag,group:'field',definition:`${DOMAINS[key].label}固定主题说明。`,total:1,recent:1,indexable:true,latestAt:now}];
@@ -38,6 +39,7 @@ export async function startEnvironment(root) {
     const episodes=[{id:'podcast-item-a',programId:'pod-ai',title:'AI播客回归单集',description:'测试摘要',publishedAt:now,durationSeconds:30,audioUrl:apiBases.ai+'/api/site/test-podcast-audio',audioType:'audio/wav',pageUrl:null},{id:'podcast-item-b',programId:'pod-economy',title:'经济播客回归单集',description:'中文测试摘要',publishedAt:now,durationSeconds:30,audioUrl:apiBases.ai+'/api/site/test-podcast-audio',audioType:'audio/wav',pageUrl:null}].filter(e=>{const p=programs.find(p=>p.id===e.programId);return(!url.searchParams.get('program')||e.programId===url.searchParams.get('program'))&&(!url.searchParams.get('episode')||e.id===url.searchParams.get('episode'))&&(!url.searchParams.get('language')||p.language===url.searchParams.get('language'))&&(!url.searchParams.get('topic')||p.topics.includes(url.searchParams.get('topic')));});
     return json(200,{programs,episodes,total:episodes.length,page:1,pageCount:1,updatedAt:now});
    }
+   if(url.pathname==='/api/site/exhibition-venues')return json(key==='art'?200:404,key==='art'?venueDirectory:{code:'not_found'});
    if(url.pathname==='/api/site/meta')return json(200,{changelogVersion:'test-1'});
    if(url.pathname==='/api/site/contact')return json(200,{wechatQr:null,feishuQr:null});
    if(url.pathname==='/api/site/changelog')return json(200,{latestVersion:'test-1',releases:[]});

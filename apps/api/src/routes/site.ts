@@ -1,3 +1,4 @@
+import {loadExhibitionVenues} from '@aihot/backend/publication/exhibition-venues';
 import {loadPodcastRecommendations} from '@aihot/backend/publication/podcast-recommendations';
 import {loadPodcastDirectory} from '@aihot/backend/publication/podcasts';
 import {PROFILE_KEY} from "@aihot/industry/profile";
@@ -166,6 +167,10 @@ export function registerSite(app: FastifyInstance) {
   app.get("/api/site/contact", siteHandler(async (req, reply) => {
     const [contact, makerAvatar] = await Promise.all([loadContact(), loadMakerAvatar()]);
     return sendJsonWithEtag(req, reply, { ...contact, makerAvatar }, { etagPrefix: "contact", cacheControl: "public, max-age=300, s-maxage=300" });
+  }));
+
+  if (PROFILE_KEY === 'art') app.get('/api/site/exhibition-venues', siteHandler(async (req, reply) => {
+    return sendJsonWithEtag(req, reply, loadExhibitionVenues(), {etagPrefix:'exhibition-venues',cacheControl:'public, max-age=300, s-maxage=300'});
   }));
 
   if (PROFILE_KEY === "art" || PROFILE_KEY === "cs2") app.get("/api/site/tracking", siteHandler(async (req, reply) => {
